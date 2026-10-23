@@ -21,7 +21,7 @@ export const MAX_IMAGES = 4;
 /** 开始之前先检查：有没有配置 AI、有没有联网。返回不能开始的原因 */
 export async function aiBlocker(): Promise<string | null> {
   const s = await getSettings();
-  if (!s.workerUrl || !s.appToken) return '还没配置 AI 服务，先去设置里填好服务地址和访问口令';
+  if (!s.appToken) return '还没填 AI 服务的访问口令，先去设置里填好';
   if (!navigator.onLine) return '需要联网才能识别';
   return null;
 }

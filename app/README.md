@@ -1,53 +1,71 @@
 # 食谱 · 前端（PWA）
 
-需求见 [../SPEC.md](../SPEC.md)，页面设计见 [../PRD.md](../PRD.md)。所有数据都存在本机的 IndexedDB 里；识别类功能通过 [../worker](../worker/README.md) 调用 AI。
+需求见 [../SPEC.md](../SPEC.md)，页面设计见 [../PRD.md](../PRD.md)。所有数据都存在本机的 IndexedDB 里；识别类功能通过同一个网址下的 `/api`（`server/` 目录，作为 Cloudflare Pages Functions 部署）调用 AI。
 
 ## 本地运行
 
 ```bash
 npm install
-npm run dev
+npm run dev        # 只跑前端：http://localhost:5173
 ```
 
-在电脑浏览器打开 http://localhost:5173 。终端还会打印一个 `Network` 地址：iPhone 连同一个 Wi-Fi，用 Safari 打开它就能看界面。
+要连同 AI 服务一起跑（默认模拟模型，不需要任何密钥）：
 
-局域网地址是 http，不是 https，所以有两个限制：
-- **离线缓存不会生效**；
-- **不保证能长期保存数据**。
+```bash
+cp .dev.vars.example .dev.vars   # 本地访问口令默认 dev-token
+npm run build && npm run dev:api # 网页 + /api：http://127.0.0.1:8788
+```
 
-正式使用请部署到下面的 Cloudflare Pages。
+在应用的"设置 → AI 识别"里填口令 `dev-token`，服务地址留空，然后点"测试连接"。
 
 ## 测试和构建
 
 ```bash
-npm test          # 核心逻辑单元测试（单位换算、购物清单、扣库存、热量、到期日、搜索、文本解析）
-npm run build     # 类型检查 + 生产构建，产物在 dist/
-npm run preview   # 本地预览生产构建
+npm test          # 单元测试：核心逻辑、识别结果匹配、AI 服务接口
+npm run build     # 类型检查（前端 + 服务端）+ 生产构建，产物在 dist/
 ```
 
-## 部署到 Cloudflare Pages（免费）
+## 部署（Cloudflare Pages，已连接 GitHub）
 
-部署需要登录你自己的 Cloudflare 账号。第一次部署：
+推到 GitHub 的 `main` 分支后，Cloudflare 会自动构建、部署，线上地址是 https://home-kitchen-6kj.pages.dev 。
 
-```bash
-npm run build
-npx wrangler login
-npx wrangler pages deploy dist --project-name shipu
-```
+项目的构建设置：根目录 `app`、构建命令 `npm run build`、输出目录 `dist`、环境变量 `NODE_VERSION=22`。`functions/` 目录会被自动部署成 `/api` 接口。
 
-完成后会得到一个 `https://shipu-xxx.pages.dev` 地址。以后更新时，重新执行 `npm run build`，再执行最后一条部署命令即可。
+## AI 服务
+
+代码在 `server/`，入口是 `functions/api/[[path]].ts`，接口说明见 SPEC §6。每个请求都要带访问口令（`X-App-Token`），模型的输出先经过格式校验，不合格会重试一次。
+
+**1. 设置密钥**：在 Cloudflare 后台打开 Pages 项目 `home-kitchen` → Settings → Variables and Secrets，添加两个类型为 **Secret** 的变量：
+- `APP_TOKEN`：自己编一串足够长的随机字符，比如用 `openssl rand -hex 16` 生成。手机上要填同一串。
+- `AI_KEY`：AI 服务商给的 API Key。用模拟模型时不需要。
+
+改完后要重新部署一次才会生效：在 Deployments 里点最新那次的 Retry，或者推一次代码。
+
+**2. 选模型**：改 `wrangler.toml` 里的 `[vars]`，推到 GitHub 后自动生效，手机端不用动。
+
+| 模型 | 写法 |
+|---|---|
+| 模拟模型（默认） | `AI_PROVIDER = "mock"` |
+| Claude | `AI_PROVIDER = "anthropic"`，`AI_MODEL` 留空（默认 `claude-opus-5-5`） |
+| 通义千问（阿里云百炼） | `AI_PROVIDER = "openai-compatible"`，`AI_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"`，`AI_MODEL = "qwen-vl-max"`（需要能看图的模型，以控制台里的名字为准） |
+| 豆包（火山方舟） | `AI_PROVIDER = "openai-compatible"`，`AI_BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"`，`AI_MODEL` 填控制台里视觉模型的名称或接入点 ID |
+
+**说明**：
+- **Claude**：用官方 SDK 和结构化输出，开启了服务端兜底（`fallbacks: "default"`，模型拒绝处理时自动换一个模型重试），effort 设为 `low`。按每百万 token 输入 4 美元、输出 20 美元算，识别一张截图大约两三美分（估算，以账单为准）。
+- **OpenAI 兼容模型**：把 JSON Schema 写进提示词，再用 JSON 模式、格式校验和重试来兜底。
+- **防止被别人用掉额度**：没设置 `APP_TOKEN` 时拒绝所有请求；同时建议在 AI 服务商后台设置每月消费上限。
 
 ## 在 iPhone 上使用
 
-1. 用 Safari 打开部署后的 https 地址。
+1. 用 Safari 打开 https://home-kitchen-6kj.pages.dev 。
 2. 点底部"分享"，选"添加到主屏幕"。
-3. 以后都从主屏幕图标打开。数据只存在这台手机上，记得在"设置"里定期导出备份。
-
-第一次打开时，可以点"加载示例数据看看效果"；在"设置"里也能加载示例数据，或者清空所有数据。
+3. 以后都从主屏幕图标打开。数据只存在这台手机上，记得在"设置"里定期导出备份（备份里不含访问口令）。
 
 ## 目录
 
 ```
+server/      AI 服务（Hono）：接口、提示词、输出格式、各家模型的适配
+functions/   Cloudflare Pages 的入口，把 /api/* 交给 server/
 src/
 ├─ db/        数据结构、Dexie 数据库、约 50 种样本食材
 ├─ logic/     纯函数（有单元测试）：单位换算、清单生成、扣库存、热量、到期日、搜索、文本解析
@@ -62,7 +80,7 @@ src/
 - **第一阶段（已完成）**：菜谱、菜单、购物清单、入库、冰箱、备份。
 - **第二阶段（已完成）**：
   - 截图导入、粘贴文字导入、拍照入库（小票 / 订单截图 / 实物照片）、AI 估算新食材；
-  - 需要先部署 [../worker](../worker/README.md)，再在"设置 → AI 识别"里填服务地址和口令，点"测试连接"。
+  - 需要在 Cloudflare 设置访问口令（见下方"AI 服务"），再在手机"设置 → AI 识别"里填同一个口令，点"测试连接"。
 - **还没做的**：
   - **烹饪模式、拍照记热量**（第三阶段）。详情页的"开始做"目前只给出提示。
   - **长按拖动**（换分区、换日期）、**"帮我安排"**（第四阶段）。

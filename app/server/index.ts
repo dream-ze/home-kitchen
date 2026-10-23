@@ -1,4 +1,5 @@
-// 食谱 · AI 代理（SPEC §3、§6）。手机只和这里通信，模型密钥只放在服务器上。
+// 食谱 · AI 服务（SPEC §3、§6）。作为 Cloudflare Pages 的服务端功能运行（入口 functions/api/[[path]].ts），
+// 和网页同一个网址。手机只和这里通信，模型密钥只放在服务器上。
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { z } from 'zod';

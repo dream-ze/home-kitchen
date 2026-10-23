@@ -111,8 +111,8 @@ export function SettingsPage() {
 
         <Group title="AI 识别" hint="截图导入、粘贴文字、拍照入库、新建食材时都会用到。用哪家模型在服务器上设置，换模型不需要改手机这边。">
           <label className="field" style={{ padding: '12px 0', borderBottom: '1px solid var(--divider)' }}>
-            服务地址
-            <input className="input" placeholder="https://你的-worker.workers.dev" value={settings.workerUrl} onChange={(e) => updateSettings({ workerUrl: e.target.value.trim() })} />
+            服务地址（可选）
+            <input className="input" placeholder="留空就用本站" value={settings.workerUrl} onChange={(e) => updateSettings({ workerUrl: e.target.value.trim() })} />
           </label>
           <label className="field" style={{ padding: '12px 0', borderBottom: '1px solid var(--divider)' }}>
             访问口令

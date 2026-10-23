@@ -1,4 +1,4 @@
-// 调用 AI 代理（Worker）。错误一律转成能直接给人看的中文（PRD §6）。
+// 调用 AI 服务（默认就是本站的 /api，也可以在设置里填别的地址）。错误一律转成能直接给人看的中文（PRD §6）。
 import { getSettings } from './settings';
 
 export interface AiRecipe {
@@ -58,14 +58,14 @@ const TIMEOUT_MS = 50_000; // 比 Worker 的 45 秒长一点，超时时能拿�
 
 async function call<T>(path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
   const s = await getSettings();
-  if (!s.workerUrl || !s.appToken) throw new AiError('not_configured', '还没配置 AI 服务，先去设置里填好服务地址和访问口令');
+  if (!s.appToken) throw new AiError('not_configured', '还没填 AI 服务的访问口令，先去设置里填好');
   if (typeof navigator !== 'undefined' && navigator.onLine === false) throw new AiError('offline', '需要联网才能识别');
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(new DOMException('timeout', 'TimeoutError')), TIMEOUT_MS);
   signal?.addEventListener('abort', () => ctrl.abort(signal.reason));
   let res: Response;
   try {
-    res = await fetch(s.workerUrl.replace(/\/+$/, '') + path, {
+    res = await fetch(s.workerUrl.trim().replace(/\/+$/, '') + path, {
       method: body === undefined ? 'GET' : 'POST',
       headers: { 'Content-Type': 'application/json', 'X-App-Token': s.appToken },
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -87,6 +87,7 @@ async function call<T>(path: string, body?: unknown, signal?: AbortSignal): Prom
   if (res.ok) return data as T;
   const msg = typeof data.message === 'string' ? data.message : '';
   if (res.status === 401) throw new AiError('unauthorized', '访问口令不对，去设置里看看');
+  if (res.status === 404) throw new AiError('server', '找不到 AI 服务，检查一下设置里的服务地址（留空就是用本站）');
   if (res.status === 422) throw new AiError('not_recognized', '没认出来' + (msg ? `：${msg}` : ''));
   if (res.status === 400) throw new AiError('bad_request', msg || '请求有问题');
   if (res.status === 504) throw new AiError('timeout', '等太久了，没认出来，再试一次吧');

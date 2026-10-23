@@ -27,11 +27,17 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
         navigateFallback: 'index.html',
+        // /api 是服务端接口，不能被离线缓存当成页面接管
+        navigateFallbackDenylist: [/^\/api\//],
       },
     }),
   ],
+  server: {
+    // 本地开发：另开一个终端运行 npm run dev:api（Pages 服务端功能），这里把 /api 转过去
+    proxy: { '/api': 'http://127.0.0.1:8788' },
+  },
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'server/**/*.test.ts'],
   },
 });

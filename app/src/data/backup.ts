@@ -23,6 +23,8 @@ function blobToDataUrl(blob: Blob): Promise<string> {
 export async function exportBackup(includeImages: boolean): Promise<File> {
   const tables: Record<string, unknown[]> = {};
   for (const name of DATA_TABLES) tables[name] = await db.table(name).toArray();
+  // 访问口令不进备份文件
+  tables.settings = (tables.settings as Record<string, unknown>[]).map((s) => ({ ...s, appToken: '', workerUrl: '' }));
   const data: BackupFile = { app: 'shipu', schema: 1, exportedAt: Date.now(), tables };
   if (includeImages) {
     data.blobs = await Promise.all((await db.blobs.toArray()).map(async (b) => ({ id: b.id, dataUrl: await blobToDataUrl(b.data) })));
@@ -77,11 +79,15 @@ export async function restoreBackup(data: BackupFile): Promise<void> {
     ? await Promise.all(data.blobs.map(async (b) => ({ id: b.id, data: await (await fetch(b.dataUrl)).blob() })))
     : null;
   const tables = DATA_TABLES.map((t) => db.table(t));
+  const current = await db.settings.get('app');
   await db.transaction('rw', [...tables, db.blobs], async () => {
     for (const name of DATA_TABLES) {
       await db.table(name).clear();
       await db.table(name).bulkPut(data.tables[name] ?? []);
     }
+    // 备份里没有访问口令，恢复后沿用手机上现在的
+    const restored = await db.settings.get('app');
+    if (restored && current) await db.settings.put({ ...restored, appToken: current.appToken, workerUrl: current.workerUrl });
     // 备份里没带图片时，保留手机上已有的图片
     if (blobs) {
       await db.blobs.clear();
