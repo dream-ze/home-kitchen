@@ -45,7 +45,8 @@ npm run build     # 类型检查（前端 + 服务端）+ 生产构建，产物�
 
 | 模型 | 写法 |
 |---|---|
-| 模拟模型（默认） | `AI_PROVIDER = "mock"` |
+| 模拟模型 | `AI_PROVIDER = "mock"` |
+| **DeepSeek（当前）** | `AI_PROVIDER = "openai-compatible"`，`AI_BASE_URL = "https://api.deepseek.com"`，`AI_MODEL = "deepseek-flash"`（支持看图） |
 | Claude | `AI_PROVIDER = "anthropic"`，`AI_MODEL` 留空（默认 `claude-opus-5-5`） |
 | 通义千问（阿里云百炼） | `AI_PROVIDER = "openai-compatible"`，`AI_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"`，`AI_MODEL = "qwen-vl-max"`（需要能看图的模型，以控制台里的名字为准） |
 | 豆包（火山方舟） | `AI_PROVIDER = "openai-compatible"`，`AI_BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"`，`AI_MODEL` 填控制台里视觉模型的名称或接入点 ID |

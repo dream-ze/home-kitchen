@@ -10,7 +10,8 @@ compatibility_flags = ["nodejs_compat"]
 #   AI_PROVIDER = "mock"               不调用任何模型，返回固定的示例结果
 # 密钥不要写在这里：在 Cloudflare 后台 Pages 项目 → Settings → Variables and Secrets 里
 # 添加类型为 Secret 的 APP_TOKEN 和 AI_KEY。
+# 现在用的是 DeepSeek（能看图的 deepseek-flash）。AI_KEY 在 Cloudflare 后台设置为 Secret。
 [vars]
-AI_PROVIDER = "mock"
-AI_BASE_URL = ""
-AI_MODEL = ""
+AI_PROVIDER = "openai-compatible"
+AI_BASE_URL = "https://api.deepseek.com"
+AI_MODEL = "deepseek-flash"

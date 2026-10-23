@@ -1,4 +1,4 @@
-// OpenAI 兼容格式：通义千问（DashScope 兼容模式）、豆包（火山方舟）、OpenAI 等。
+// OpenAI 兼容格式：DeepSeek、通义千问（DashScope 兼容模式）、豆包（火山方舟）、OpenAI 等。
 // 这类接口的结构化输出支持程度不一，所以把 JSON Schema 写进提示词，再用 JSON 模式 + 校验 + 重试兜底。
 import { z } from 'zod';
 import { extractJson, validate, withRetry } from './json';
@@ -14,7 +14,8 @@ export function openaiCompatibleProvider(env: Env): Provider {
     model: env.AI_MODEL,
     generate<T>(task: Task<T>): Promise<T> {
       const schema = JSON.stringify(z.toJSONSchema(task.schema as z.ZodType));
-      const system = `${task.system}\n\n只输出一个 JSON 对象，不要输出任何其他文字。JSON 必须符合这个 JSON Schema：\n${schema}`;
+      // DeepSeek 的 JSON 模式要求提示词里出现小写的 "json"；它偶尔返回空内容，由 withRetry 重试兜底
+      const system = `${task.system}\n\n只输出一个 json 对象，不要输出任何其他文字。json 必须符合这个 JSON Schema：\n${schema}`;
       return withRetry(async () => {
         const content = [
           ...task.images.map((b64) => ({ type: 'image_url', image_url: { url: `data:image/jpeg;base64,${b64}` } })),
