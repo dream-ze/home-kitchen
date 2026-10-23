@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>冰箱</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E7A4B}a:hover{color:#245F3B}
+</style>
+</helmet>
+<div style="width: 390px; height: 1320px; box-sizing: border-box; background: #F4F5F1; color: #18201B; font-family: 'PingFang SC', 'Noto Sans SC', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<main style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 24px 20px 20px">
+
+<header style="display: flex; justify-content: space-between; align-items: flex-end">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #5B6660">8 样食材 · 4 样 3 天内要用掉</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: 0.5px">冰箱</h1>
+</div>
+<div style="display: flex; gap: 8px">
+<a href="PhotoStockIn.dc.html" style="height: 44px; padding: 0 14px; border-radius: 999px; background: #2E7A4B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 500">
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.5-2h4.4l1.5 2h1.8A2.5 2.5 0 0 1 20 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+拍照添加
+</a>
+<button aria-label="手动添加" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 22px; font-family: inherit; padding: 0">+</button>
+</div>
+</header>
+
+<section style="background: #FFFFFF; border-radius: 18px; padding: 6px 16px 4px; display: flex; flex-direction: column">
+<h2 style="margin: 0; padding: 10px 0 4px; font-size: 13px; font-weight: 500; color: #5B6660">冷藏</h2>
+
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 12px 0; border-bottom: 1px solid #ECEEEA">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: 1; font-size: 16px">酸奶 <span style="color: #5B6660; font-size: 14px">2 杯</span></span>
+<span style="font-size: 13px; color: #9E2219; background: #FBE9E7; border-radius: 999px; padding: 4px 10px">已过期 1 天</span>
+</div>
+<sc-if value="{{yogurtOpen}}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+<button onClick="{{used}}" style="height: 40px; border-radius: 10px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 14px; font-family: inherit">用掉了</button>
+<button onClick="{{tossed}}" style="height: 40px; border-radius: 10px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 14px; font-family: inherit">扔掉了</button>
+<button onClick="{{extend}}" style="height: 40px; border-radius: 10px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 14px; font-family: inherit">再放 3 天</button>
+</div>
+</sc-if>
+<sc-if value="{{yogurtAsk}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 8px; background: #F4F5F1; border-radius: 10px; padding: 10px 12px">
+<span style="font-size: 14px; color: #18201B">酸奶扔掉了。要再买吗？</span>
+<div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 8px">
+<button onClick="{{buy}}" style="height: 40px; border-radius: 10px; border: none; background: #2E7A4B; color: #FFFFFF; font-size: 14px; font-family: inherit">加进购物清单</button>
+<button onClick="{{nobuy}}" style="height: 40px; border-radius: 10px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 14px; font-family: inherit">不用了</button>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{yogurtDone}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; justify-content: space-between; background: #F4F5F1; border-radius: 10px; padding: 4px 4px 4px 12px">
+<span style="font-size: 13px; color: #3F4944">{{yogurtMsg}}</span>
+<button onClick="{{yogurtUndo}}" style="height: 36px; padding: 0 12px; border: none; background: transparent; color: #2E7A4B; font-size: 13px; font-family: inherit">撤销</button>
+</div>
+</sc-if>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 0; border-bottom: 1px solid #ECEEEA">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: 1; font-size: 16px">鸡翅中 <span style="color: #5B6660; font-size: 14px">8 个</span></span>
+<span style="font-size: 14px; color: #93400F; font-weight: 500">明天到期</span>
+</div>
+<div aria-hidden="true" style="height: 4px; border-radius: 2px; background: #EEF0EC"><div style="width: 15%; height: 4px; border-radius: 2px; background: #C2551F"></div></div>
+<a href="PickRecipe.dc.html" style="align-self: flex-start; font-size: 13px; text-decoration: none; min-height: 28px; display: flex; align-items: center">找能用掉它的菜 ›</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 0; border-bottom: 1px solid #ECEEEA">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: 1; font-size: 16px">菠菜 <span style="color: #5B6660; font-size: 14px">300 g</span></span>
+<span style="font-size: 14px; color: #93400F; font-weight: 500">还剩 2 天</span>
+</div>
+<div aria-hidden="true" style="height: 4px; border-radius: 2px; background: #EEF0EC"><div style="width: 35%; height: 4px; border-radius: 2px; background: #C2551F"></div></div>
+<a href="PickRecipe.dc.html" style="align-self: flex-start; font-size: 13px; text-decoration: none; min-height: 28px; display: flex; align-items: center">找能用掉它的菜 ›</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 0; border-bottom: 1px solid #ECEEEA">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: 1; font-size: 16px">牛奶 <span style="color: #5B6660; font-size: 14px">1 L</span></span>
+<span style="font-size: 14px; color: #93400F; font-weight: 500">还剩 3 天</span>
+</div>
+<div aria-hidden="true" style="height: 4px; border-radius: 2px; background: #EEF0EC"><div style="width: 40%; height: 4px; border-radius: 2px; background: #C2551F"></div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: 1; font-size: 16px">鸡蛋 <span style="color: #5B6660; font-size: 14px">4 个</span></span>
+<span style="font-size: 14px; color: #5B6660">还剩 12 天</span>
+</div>
+<div aria-hidden="true" style="height: 4px; border-radius: 2px; background: #EEF0EC"><div style="width: 40%; height: 4px; border-radius: 2px; background: #A3ACA6"></div></div>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border-radius: 18px; padding: 6px 16px 4px; display: flex; flex-direction: column">
+<h2 style="margin: 0; padding: 10px 0 4px; font-size: 13px; font-weight: 500; color: #5B6660">冷冻</h2>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 0; border-bottom: 1px solid #ECEEEA">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: 1; font-size: 16px">虾仁 <span style="color: #5B6660; font-size: 14px">250 g</span></span>
+<span style="font-size: 14px; color: #5B6660">还剩 45 天</span>
+</div>
+<div aria-hidden="true" style="height: 4px; border-radius: 2px; background: #EEF0EC"><div style="width: 50%; height: 4px; border-radius: 2px; background: #A3ACA6"></div></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: 1; font-size: 16px">速冻饺子 <span style="color: #5B6660; font-size: 14px">20 个</span></span>
+<span style="font-size: 14px; color: #5B6660">还剩约 2 个月</span>
+</div>
+<div aria-hidden="true" style="height: 4px; border-radius: 2px; background: #EEF0EC"><div style="width: 65%; height: 4px; border-radius: 2px; background: #A3ACA6"></div></div>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border-radius: 18px; padding: 6px 16px 4px; display: flex; flex-direction: column">
+<h2 style="margin: 0; padding: 10px 0 4px; font-size: 13px; font-weight: 500; color: #5B6660">常温</h2>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 12px 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: 1; font-size: 16px">土豆 <span style="color: #5B6660; font-size: 14px">3 个</span></span>
+<span style="font-size: 14px; color: #5B6660">还剩 10 天</span>
+</div>
+<div aria-hidden="true" style="height: 4px; border-radius: 2px; background: #EEF0EC"><div style="width: 50%; height: 4px; border-radius: 2px; background: #A3ACA6"></div></div>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border-radius: 18px; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<h2 style="margin: 0; font-size: 16px; font-weight: 700">常备品</h2>
+<span style="font-size: 12px; color: #5B6660">标“快没了”会自动加进购物清单</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{staples}}" as="s" hint-placeholder-count="7">
+<button aria-pressed="{{s.pressed}}" onClick="{{s.toggle}}" style="{{s.style}}"><span style="font-size: 14px">{{s.name}}</span><span style="{{s.stateStyle}}">{{s.state}}</span></button>
+</sc-for>
+<button style="height: 52px; border-radius: 12px; border: 1px dashed #C9CFC6; background: transparent; color: #5B6660; font-size: 20px; font-family: inherit; padding: 0" aria-label="添加常备品">+</button>
+</div>
+</section>
+
+</main>
+
+<sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="margin: 0 20px 10px; height: 46px; border-radius: 14px; background: #18201B; color: #FFFFFF; display: flex; align-items: center; justify-content: space-between; padding: 0 6px 0 16px; font-size: 14px">
+<span>{{toastText}}</span>
+<button onClick="{{undoToast}}" style="height: 38px; padding: 0 12px; border: none; background: transparent; color: #7FCB9B; font-size: 14px; font-weight: 700; font-family: inherit">撤销</button>
+</div>
+</sc-if>
+
+<nav aria-label="主导航" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #FFFFFF; border-top: 1px solid #E3E6E0; padding: 6px 8px 28px">
+<a href="Main.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path></svg>
+今天
+</a>
+<a href="Recipes.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"></path><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3"></path><path d="M9 7.5h6M9 11h4"></path></svg>
+菜谱
+</a>
+<a href="Shopping.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 10.5h10.1L20 7.5H6.3"></path><circle cx="9" cy="19" r="1.5"></circle><circle cx="17" cy="19" r="1.5"></circle></svg>
+购物
+</a>
+<a href="Fridge.dc.html" aria-current="page" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2E7A4B; font-size: 11px; font-weight: 700">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"></rect><path d="M6 10h12M9.5 5.5v2M9.5 13v3"></path></svg>
+冰箱
+</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1320}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { yogurt: null, low: { oil: true, rice: true }, toast: null };
+}
+renderVals() {
+var self = this;
+var st = this.state || {};
+var low = st.low || {};
+var yogurt = st.yogurt || null;
+var msgs = { used: '酸奶记为“用掉了”', buy: '酸奶已扔掉，已加进购物清单', nobuy: '酸奶已扔掉', extend: '酸奶再放 3 天，10月23日再提醒' };
+var list = [['soy', '生抽'], ['dark', '老抽'], ['oil', '食用油'], ['salt', '盐'], ['wine', '料酒'], ['rice', '大米'], ['garlic', '蒜']];
+var staples = list.map(function (s) {
+var isLow = !!low[s[0]];
+return {
+name: s[1],
+state: isLow ? '快没了' : '有',
+pressed: isLow ? 'true' : 'false',
+stateStyle: 'font-size: 11px; ' + (isLow ? 'color: #7A350C;' : 'color: #245F3B;'),
+style: 'height: 52px; border-radius: 12px; font-family: inherit; color: #18201B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 0; ' + (isLow ? 'border: 1.5px solid #C2551F; background: #FBEDE3;' : 'border: 1px solid #E3E6E0; background: #FFFFFF;'),
+toggle: function () {
+var n = Object.assign({}, low);
+n[s[0]] = !isLow;
+self.setState({ low: n, toast: { id: s[0], text: n[s[0]] ? s[1] + ' 已加进购物清单' : s[1] + ' 已从购物清单移除' } });
+}
+};
+});
+var toast = st.toast;
+return {
+staples: staples,
+yogurtOpen: !yogurt,
+yogurtAsk: yogurt === 'ask',
+yogurtDone: !!yogurt && yogurt !== 'ask',
+yogurtMsg: yogurt && yogurt !== 'ask' ? msgs[yogurt] : '',
+used: function () { self.setState({ yogurt: 'used' }); },
+tossed: function () { self.setState({ yogurt: 'ask' }); },
+buy: function () { self.setState({ yogurt: 'buy' }); },
+nobuy: function () { self.setState({ yogurt: 'nobuy' }); },
+extend: function () { self.setState({ yogurt: 'extend' }); },
+yogurtUndo: function () { self.setState({ yogurt: null }); },
+hasToast: !!toast,
+toastText: toast ? toast.text : '',
+undoToast: function () {
+if (!toast) return;
+var n = Object.assign({}, low);
+n[toast.id] = !n[toast.id];
+self.setState({ low: n, toast: null });
+}
+};
+}
+}
+</script>
+</body>
+</html>

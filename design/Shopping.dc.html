@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>购物清单</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E7A4B}a:hover{color:#245F3B}
+</style>
+</helmet>
+<div style="width: 390px; height: 1420px; box-sizing: border-box; background: #F4F5F1; color: #18201B; font-family: 'PingFang SC', 'Noto Sans SC', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<main style="flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 24px 20px 20px">
+
+<header style="display: flex; justify-content: space-between; align-items: flex-end">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #5B6660">本周 5 道菜 · 已买 {{boughtCount}} / {{total}}</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: 0.5px">购物清单</h1>
+</div>
+<a href="WeekPlan.dc.html" style="height: 44px; box-sizing: border-box; padding: 0 14px; border-radius: 999px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 14px; text-decoration: none; display: flex; align-items: center">从菜单生成</a>
+</header>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label style="height: 46px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E3E6E0; display: flex; align-items: center; gap: 8px; padding: 0 14px; color: #5B6660">
+<span aria-hidden="true" style="font-size: 20px; line-height: 1">+</span>
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">添加到购物清单</span>
+<input type="text" placeholder="添加…  拼音首字母也行，如 xhs" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 15px; font-family: inherit; color: #18201B">
+</label>
+<div style="display: flex; align-items: center; gap: 6px">
+<span style="font-size: 12px; color: #5B6660; flex: none">常买</span>
+<button style="height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 13px; font-family: inherit">+ 鸡蛋</button>
+<button style="height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 13px; font-family: inherit">+ 牛奶</button>
+<button style="height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 13px; font-family: inherit">+ 葱</button>
+<button style="height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 13px; font-family: inherit">+ 厨房纸</button>
+</div>
+</div>
+
+<div role="tablist" aria-label="清单视图" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: #E7EAE4; border-radius: 12px; padding: 3px">
+<button role="tab" aria-selected="true" style="height: 38px; border-radius: 10px; border: none; background: #FFFFFF; color: #18201B; font-size: 14px; font-weight: 500; font-family: inherit">按分区</button>
+<button role="tab" aria-selected="false" style="height: 38px; border-radius: 10px; border: none; background: transparent; color: #5B6660; font-size: 14px; font-family: inherit">按菜谱</button>
+</div>
+
+<sc-for list="{{sections}}" as="sec" hint-placeholder-count="3">
+<section style="background: #FFFFFF; border-radius: 18px; padding: 6px 16px 4px; display: flex; flex-direction: column">
+<h2 style="margin: 0; padding: 10px 0 4px; font-size: 13px; font-weight: 500; color: #5B6660">{{sec.title}}</h2>
+<sc-for list="{{sec.items}}" as="it" hint-placeholder-count="2">
+<div style="{{it.rowStyle}}">
+<button role="checkbox" aria-checked="false" aria-label="{{it.aria}}" onClick="{{it.toggle}}" style="width: 26px; height: 26px; flex: none; border-radius: 13px; border: 2px solid #A3ACA6; background: #FFFFFF; padding: 0"></button>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 16px">{{it.name}}</span><span style="{{it.subStyle}}">{{it.sub}}</span></span>
+<span style="font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums">{{it.qty}}</span>
+</div>
+</sc-for>
+</section>
+</sc-for>
+<span style="font-size: 12px; color: #5B6660; padding: 0 4px; margin-top: -6px">分错区了？长按条目拖到别的分区，下次会记住</span>
+
+<sc-if value="{{hasBought}}" hint-placeholder-val="{{ true }}">
+<section style="background: #EBEEE8; border-radius: 18px; padding: 6px 16px 4px; display: flex; flex-direction: column">
+<h2 style="margin: 0; padding: 10px 0 4px; font-size: 13px; font-weight: 500; color: #3F4944">已买 {{boughtCount}} 样 · 点一下可以取消</h2>
+<sc-for list="{{bought}}" as="it" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 12px; min-height: 48px">
+<button role="checkbox" aria-checked="true" aria-label="{{it.aria}}" onClick="{{it.toggle}}" style="width: 26px; height: 26px; flex: none; border-radius: 13px; border: none; background: #2E7A4B; color: #FFFFFF; font-size: 14px; padding: 0">✓</button>
+<span style="flex: 1; font-size: 15px; color: #5B6660; text-decoration: line-through">{{it.name}}</span>
+<span style="font-size: 14px; color: #5B6660">{{it.qty}}</span>
+</div>
+</sc-for>
+</section>
+</sc-if>
+
+<section style="background: #FFFFFF; border: 1px solid #E3E6E0; border-radius: 18px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<h2 style="margin: 0; font-size: 13px; font-weight: 500; color: #3F4944">家里已有 4 样，没加进清单</h2>
+<button style="height: 32px; border: none; background: transparent; color: #2E7A4B; font-size: 13px; font-family: inherit; padding: 0">展开</button>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span style="font-size: 13px; color: #3F4944; background: #EEF0EC; border-radius: 999px; padding: 4px 10px">鸡翅中 8 个</span>
+<span style="font-size: 13px; color: #3F4944; background: #EEF0EC; border-radius: 999px; padding: 4px 10px">菠菜 300 g</span>
+<span style="font-size: 13px; color: #3F4944; background: #EEF0EC; border-radius: 999px; padding: 4px 10px">生抽</span>
+<span style="font-size: 13px; color: #3F4944; background: #EEF0EC; border-radius: 999px; padding: 4px 10px">冰糖</span>
+</div>
+</section>
+
+</main>
+
+<sc-if value="{{hasToast}}" hint-placeholder-val="{{ true }}">
+<div role="status" style="margin: 0 20px 10px; height: 46px; border-radius: 14px; background: #18201B; color: #FFFFFF; display: flex; align-items: center; justify-content: space-between; padding: 0 6px 0 16px; font-size: 14px">
+<span>已买 {{toastName}}</span>
+<button onClick="{{undoToast}}" style="height: 38px; padding: 0 12px; border: none; background: transparent; color: #7FCB9B; font-size: 14px; font-weight: 700; font-family: inherit">撤销</button>
+</div>
+</sc-if>
+
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 20px 12px; background: #FFFFFF; border-top: 1px solid #E3E6E0">
+<span style="font-size: 12px; color: #5B6660">已买 {{boughtCount}} 样 · 网上买的菜，拍订单截图就能入库</span>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+<a href="PhotoStockIn.dc.html" style="height: 46px; border-radius: 14px; border: 1px solid #D5DAD3; color: #18201B; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 15px">
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.5-2h4.4l1.5 2h1.8A2.5 2.5 0 0 1 20 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+拍照入库
+</a>
+<a href="StockIn.dc.html" style="height: 46px; border-radius: 14px; background: #2E7A4B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 500">放进冰箱</a>
+</div>
+</div>
+
+<nav aria-label="主导航" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #FFFFFF; border-top: 1px solid #E3E6E0; padding: 6px 8px 28px">
+<a href="Main.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path></svg>
+今天
+</a>
+<a href="Recipes.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"></path><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3"></path><path d="M9 7.5h6M9 11h4"></path></svg>
+菜谱
+</a>
+<a href="Shopping.dc.html" aria-current="page" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2E7A4B; font-size: 11px; font-weight: 700">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 10.5h10.1L20 7.5H6.3"></path><circle cx="9" cy="19" r="1.5"></circle><circle cx="17" cy="19" r="1.5"></circle></svg>
+购物
+</a>
+<a href="Fridge.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"></rect><path d="M6 10h12M9.5 5.5v2M9.5 13v3"></path></svg>
+冰箱
+</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1420}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { checked: { tomato: true, tofu: true, star: true }, last: 'star' };
+}
+renderVals() {
+var self = this;
+var st = this.state || {};
+var checked = st.checked || {};
+var last = st.last || null;
+var data = [
+{ title: '蔬菜水果', items: [
+{ id: 'tomato', name: '番茄', qty: '买 4 个', sub: '番茄炒蛋、罗宋汤' },
+{ id: 'melon', name: '冬瓜', qty: '买 500 g', sub: '冬瓜排骨汤' },
+{ id: 'scallion', name: '葱', qty: '买 1 把', sub: '3 道菜用到' }
+] },
+{ title: '肉蛋豆制品', items: [
+{ id: 'egg', name: '鸡蛋', qty: '买 6 个', sub: '共需 10 · 冰箱有 4' },
+{ id: 'ribs', name: '排骨', qty: '买 500 g', sub: '冬瓜排骨汤' },
+{ id: 'tofu', name: '嫩豆腐', qty: '买 1 盒', sub: '麻婆豆腐' }
+] },
+{ title: '调料干货', items: [
+{ id: 'oil', name: '食用油', qty: '买 1 桶', sub: '常备品 · 你标了“快没了”', warn: true },
+{ id: 'cola', name: '可乐', qty: '买 330 ml', sub: '可乐鸡翅' },
+{ id: 'star', name: '八角', qty: '买 1 包', sub: '可乐鸡翅' }
+] }
+];
+var names = {};
+var total = 0, boughtCount = 0;
+var bought = [];
+var mk = function (it) {
+names[it.id] = it.name;
+return function () {
+var n = Object.assign({}, checked);
+n[it.id] = !checked[it.id];
+self.setState({ checked: n, last: n[it.id] ? it.id : null });
+};
+};
+var sections = [];
+data.forEach(function (sec) {
+var open = [];
+sec.items.forEach(function (it) {
+total++;
+var toggle = mk(it);
+if (checked[it.id]) {
+boughtCount++;
+bought.push({ name: it.name, qty: it.qty.replace('买 ', ''), aria: '取消已买 ' + it.name, toggle: toggle });
+} else {
+open.push(it);
+}
+});
+if (open.length) {
+sections.push({
+title: sec.title,
+items: open.map(function (it, i) {
+return {
+name: it.name, qty: it.qty, sub: it.sub,
+aria: '标记已买 ' + it.name,
+subStyle: 'font-size: 12px; ' + (it.warn ? 'color: #93400F;' : 'color: #5B6660;'),
+rowStyle: 'display: flex; align-items: center; gap: 12px; min-height: 58px;' + (i < open.length - 1 ? ' border-bottom: 1px solid #ECEEEA;' : ''),
+toggle: mk(it)
+};
+})
+});
+}
+});
+return {
+sections: sections,
+bought: bought,
+hasBought: bought.length > 0,
+boughtCount: boughtCount,
+total: total,
+hasToast: !!last && !!checked[last],
+toastName: last ? names[last] : '',
+undoToast: function () { var n = Object.assign({}, checked); if (last) n[last] = false; self.setState({ checked: n, last: null }); }
+};
+}
+}
+</script>
+</body>
+</html>

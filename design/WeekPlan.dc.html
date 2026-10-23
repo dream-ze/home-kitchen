@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>本周菜单</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E7A4B}a:hover{color:#245F3B}
+</style>
+</helmet>
+<div style="width: 390px; height: 1130px; box-sizing: border-box; background: #F4F5F1; color: #18201B; font-family: 'PingFang SC', 'Noto Sans SC', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<main style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 16px 20px 20px">
+
+<div style="display: flex; align-items: center; justify-content: space-between">
+<a href="Main.dc.html" style="min-height: 44px; display: flex; align-items: center; gap: 2px; font-size: 16px; text-decoration: none">
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+今天
+</a>
+<div style="display: flex; gap: 4px">
+<button aria-label="上一周" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #E3E6E0; background: #FFFFFF; color: #18201B; display: flex; align-items: center; justify-content: center; padding: 0">
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+</button>
+<button aria-label="下一周" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #E3E6E0; background: #FFFFFF; color: #18201B; display: flex; align-items: center; justify-content: center; padding: 0">
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</button>
+</div>
+</div>
+
+<header style="display: flex; flex-direction: column; gap: 2px; margin-top: -6px">
+<span style="font-size: 13px; color: #5B6660">10月19日 – 10月25日 · 已排 {{weekCount}} 道菜</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: 0.5px">本周菜单</h1>
+</header>
+
+<div role="tablist" aria-label="选择日期" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{strip}}" as="d" hint-placeholder-count="7">
+<button role="tab" aria-selected="{{d.selected}}" onClick="{{d.pick}}" style="{{d.style}}">
+<span style="font-size: 12px; opacity: 0.85">{{d.wd}}</span>
+<span style="font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">{{d.date}}</span>
+<span style="{{d.kcalStyle}}">{{d.kcal}}</span>
+</button>
+</sc-for>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; background: #FBEDE3; color: #7A350C; border-radius: 14px; padding: 10px 12px 10px 14px; font-size: 13px">
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 2"></path></svg>
+<span style="flex: 1">菠菜、牛奶 3 天内到期，还没排进菜单</span>
+<button style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #C2551F; background: #FFFFFF; color: #7A350C; font-size: 13px; font-family: inherit; flex: none">帮我安排</button>
+</div>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<h2 style="margin: 0; font-size: 19px; font-weight: 700">{{dayTitle}}</h2>
+<span style="font-size: 13px; color: #5B6660">{{dayKcal}}</span>
+</div>
+<span style="font-size: 12px; color: #5B6660; margin-top: -4px">日期下面是当天每人热量；长按一道菜，可以拖到别的日子</span>
+
+<div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px; display: flex; flex-direction: column">
+<sc-for list="{{slots}}" as="slot" hint-placeholder-count="4">
+<div style="{{slot.rowStyle}}">
+<span style="width: 34px; flex: none; font-size: 13px; color: #5B6660; padding-top: 12px">{{slot.label}}</span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{slot.dishes}}" as="dish" hint-placeholder-count="1">
+<div style="display: flex; align-items: center; gap: 10px; min-height: 44px">
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<span style="font-size: 16px; font-weight: 500">{{dish.name}}</span>
+<span style="font-size: 12px; color: #5B6660">{{dish.kcal}}</span>
+</div>
+<sc-if value="{{dish.hasTag}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 12px; color: #245F3B; background: #E6F1EA; border-radius: 999px; padding: 3px 9px; flex: none">{{dish.tag}}</span>
+</sc-if>
+<button aria-label="调整份数" style="height: 36px; min-width: 52px; padding: 0 10px; border-radius: 999px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 13px; font-family: inherit; flex: none">{{dish.serv}}</button>
+</div>
+</sc-for>
+<a href="PickRecipe.dc.html" style="height: 40px; box-sizing: border-box; border-radius: 10px; border: 1px dashed #C9CFC6; color: #5B6660; font-size: 14px; text-decoration: none; display: flex; align-items: center; padding: 0 12px">{{slot.addLabel}}</a>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+</main>
+
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; background: #FFFFFF; border-top: 1px solid #E3E6E0">
+<span style="font-size: 14px; color: #3F4944">本周还缺 6 样食材</span>
+<a href="Shopping.dc.html" style="height: 46px; padding: 0 20px; border-radius: 14px; background: #2E7A4B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; font-size: 15px; font-weight: 500">生成购物清单</a>
+</div>
+
+<nav aria-label="主导航" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #FFFFFF; border-top: 1px solid #E3E6E0; padding: 6px 8px 28px">
+<a href="Main.dc.html" aria-current="page" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2E7A4B; font-size: 11px; font-weight: 700">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path></svg>
+今天
+</a>
+<a href="Recipes.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"></path><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3"></path><path d="M9 7.5h6M9 11h4"></path></svg>
+菜谱
+</a>
+<a href="Shopping.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 10.5h10.1L20 7.5H6.3"></path><circle cx="9" cy="19" r="1.5"></circle><circle cx="17" cy="19" r="1.5"></circle></svg>
+购物
+</a>
+<a href="Fridge.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"></rect><path d="M6 10h12M9.5 5.5v2M9.5 13v3"></path></svg>
+冰箱
+</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1130}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { sel: 1 };
+}
+renderVals() {
+var self = this;
+var K = { '燕麦牛奶': 320, '番茄炒蛋': 230, '米饭': 230, '冬瓜排骨汤': 260, '宫保鸡丁': 460, '可乐鸡翅': 410, '葱油拌面': 520, '蒜蓉菠菜': 90, '麻婆豆腐': 300, '奶香烤鸡翅': 380 };
+var D = function (name, serv, tag) { return { name: name, serv: serv, tag: tag || '' }; };
+var days = [
+{ wd: '一', date: 19, slots: { breakfast: [D('燕麦牛奶', 1, '已做')], lunch: [D('番茄炒蛋', 2, '已做'), D('米饭', 1, '已做')], dinner: [D('冬瓜排骨汤', 3, '已做')] } },
+{ wd: '二', date: 20, today: true, slots: { breakfast: [D('燕麦牛奶', 1, '已记录')], lunch: [D('宫保鸡丁', 1, '已记录'), D('米饭', 1, '已记录')], dinner: [D('可乐鸡翅', 2)] } },
+{ wd: '三', date: 21, slots: { lunch: [D('葱油拌面', 1)], dinner: [D('麻婆豆腐', 2), D('米饭', 2)] } },
+{ wd: '四', date: 22, slots: { dinner: [D('奶香烤鸡翅', 2), D('米饭', 2)] } },
+{ wd: '五', date: 23, slots: { dinner: [D('番茄炒蛋', 2), D('米饭', 2)] } },
+{ wd: '六', date: 24, slots: {} },
+{ wd: '日', date: 25, slots: { lunch: [D('冬瓜排骨汤', 3)] } }
+];
+var slotDefs = [['breakfast', '早餐'], ['lunch', '午餐'], ['dinner', '晚餐'], ['snack', '加餐']];
+var sel = (this.state && typeof this.state.sel === 'number') ? this.state.sel : 1;
+var count = function (d) { var n = 0; slotDefs.forEach(function (s) { n += (d.slots[s[0]] || []).length; }); return n; };
+var weekCount = 0;
+days.forEach(function (d) { weekCount += count(d); });
+var base = 'height: 74px; border-radius: 14px; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 0; ';
+var strip = days.map(function (d, i) {
+var on = i === sel;
+var style = base + (on ? 'border: none; background: #18201B; color: #FFFFFF;' : (d.today ? 'border: 1.5px solid #2E7A4B; background: #FFFFFF; color: #245F3B;' : 'border: 1px solid #E3E6E0; background: #FFFFFF; color: #18201B;'));
+var kc = 0;
+slotDefs.forEach(function (s) { (d.slots[s[0]] || []).forEach(function (x) { kc += K[x.name] || 0; }); });
+return {
+wd: d.wd, date: d.date, selected: on ? 'true' : 'false', style: style,
+kcal: kc ? (kc >= 1000 ? (Math.round(kc / 100) / 10) + 'k' : String(kc)) : '空',
+kcalStyle: 'font-size: 10px; font-variant-numeric: tabular-nums; ' + (on ? 'color: #C9E8D4;' : (kc ? 'color: #5B6660;' : 'color: #8A938E;')),
+pick: function () { self.setState({ sel: i }); }
+};
+});
+var day = days[sel];
+var total = 0;
+var slots = slotDefs.map(function (s, idx) {
+var list = (day.slots[s[0]] || []).map(function (x) {
+total += K[x.name] || 0;
+return { name: x.name, serv: x.serv + ' 份', kcal: '约 ' + (K[x.name] || 0) + ' kcal / 份', tag: x.tag, hasTag: !!x.tag };
+});
+return {
+label: s[1],
+dishes: list,
+addLabel: list.length ? '+ 再加一道' : '+ 从菜谱添加',
+rowStyle: 'display: flex; gap: 12px; padding: 12px 0;' + (idx < slotDefs.length - 1 ? ' border-bottom: 1px solid #ECEEEA;' : '')
+};
+});
+return {
+strip: strip,
+slots: slots,
+weekCount: weekCount,
+dayTitle: '10月' + day.date + '日 周' + day.wd + (day.today ? ' · 今天' : ''),
+dayKcal: total ? '每人约 ' + total + ' kcal' : '还没安排'
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+node_modules
+dist
+dev-dist
+.wrangler
+.dev.vars
+*.local
+.DS_Store
+# 在根目录误跑 npm 留下的空锁文件
+/package-lock.json

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>编辑菜谱</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E7A4B}a:hover{color:#245F3B}
+</style>
+</helmet>
+<div style="width: 390px; height: 1600px; box-sizing: border-box; background: #F4F5F1; color: #18201B; font-family: 'PingFang SC', 'Noto Sans SC', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<header style="height: 56px; display: grid; grid-template-columns: 80px 1fr 80px; align-items: center; padding: 8px 12px 0">
+<a href="RecipeDetail.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 8px; font-size: 16px; text-decoration: none; color: #18201B">取消</a>
+<h1 style="margin: 0; text-align: center; font-size: 17px; font-weight: 700">编辑菜谱</h1>
+<a href="RecipeDetail.dc.html" style="min-height: 44px; display: flex; align-items: center; justify-content: flex-end; padding: 0 8px; font-size: 16px; font-weight: 700; text-decoration: none">保存</a>
+</header>
+
+<main style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 12px 20px 24px">
+
+<button style="height: 140px; border-radius: 18px; border: 1.5px dashed #C9CFC6; background: #FFFFFF; color: #5B6660; font-size: 14px; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px">
+<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2.5"></rect><circle cx="9" cy="9.5" r="1.8"></circle><path d="M20.5 15.5l-5-5-9 9.5"></path></svg>
+添加成品图（可选）
+</button>
+
+<section style="background: #FFFFFF; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #5B6660">菜名
+<input type="text" value="可乐鸡翅" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; padding: 0 12px; font-size: 17px; font-weight: 500; font-family: inherit; color: #18201B">
+</label>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #5B6660">份数
+<div style="height: 44px; display: flex; align-items: center; justify-content: space-between; border-radius: 10px; border: 1px solid #E3E6E0">
+<button aria-label="减少份数" style="width: 44px; height: 42px; border: none; background: transparent; font-size: 20px; color: #18201B; font-family: inherit">−</button>
+<span style="font-size: 15px; color: #18201B">2 人份</span>
+<button aria-label="增加份数" style="width: 44px; height: 42px; border: none; background: transparent; font-size: 20px; color: #18201B; font-family: inherit">+</button>
+</div>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #5B6660">用时（分钟）
+<input type="number" value="30" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; padding: 0 12px; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+</label>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #5B6660">标签
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<button aria-label="移除标签 下饭" style="height: 34px; padding: 0 10px; border-radius: 999px; border: none; background: #E7EAE4; color: #3F4944; font-size: 13px; font-family: inherit">下饭 ×</button>
+<button aria-label="移除标签 鸡肉" style="height: 34px; padding: 0 10px; border-radius: 999px; border: none; background: #E7EAE4; color: #3F4944; font-size: 13px; font-family: inherit">鸡肉 ×</button>
+<button style="height: 34px; padding: 0 10px; border-radius: 999px; border: 1px dashed #C9CFC6; background: transparent; color: #5B6660; font-size: 13px; font-family: inherit">+ 标签</button>
+</div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">用料</h2>
+<button style="height: 36px; border: none; background: transparent; color: #2E7A4B; font-size: 14px; font-family: inherit; padding: 0">整段粘贴</button>
+</div>
+<div style="background: #FFFFFF; border-radius: 18px; padding: 10px 10px 12px; display: flex; flex-direction: column; gap: 8px">
+
+<div style="display: flex; align-items: center; gap: 6px">
+<span aria-hidden="true" style="width: 20px; color: #A3ACA6; display: flex; justify-content: center"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>
+<input aria-label="分组名" value="主料" style="flex: 1; height: 36px; border: none; border-bottom: 1px solid #E3E6E0; font-size: 14px; font-weight: 700; color: #3F4944; font-family: inherit; background: transparent; min-width: 0">
+</div>
+
+<div style="display: grid; grid-template-columns: 20px 52px 52px 1fr 32px; gap: 6px; align-items: center">
+<span aria-hidden="true" style="color: #A3ACA6; display: flex; justify-content: center"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>
+<input aria-label="数量" value="8" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; text-align: center; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<input aria-label="单位" value="个" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; text-align: center; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<input aria-label="食材" value="鸡翅中" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; padding: 0 10px; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<button aria-label="删除这一行" style="width: 32px; height: 44px; border: none; background: transparent; color: #8A938E; font-size: 18px; font-family: inherit; padding: 0">×</button>
+</div>
+
+<div style="display: grid; grid-template-columns: 20px 52px 52px 1fr 32px; gap: 6px; align-items: center">
+<span aria-hidden="true" style="color: #A3ACA6; display: flex; justify-content: center"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>
+<input aria-label="数量" value="330" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; text-align: center; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<input aria-label="单位" value="ml" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; text-align: center; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<input aria-label="食材" value="可乐" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; padding: 0 10px; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<button aria-label="删除这一行" style="width: 32px; height: 44px; border: none; background: transparent; color: #8A938E; font-size: 18px; font-family: inherit; padding: 0">×</button>
+</div>
+
+<div style="display: flex; align-items: center; gap: 6px; margin-top: 6px">
+<span aria-hidden="true" style="width: 20px; color: #A3ACA6; display: flex; justify-content: center"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>
+<input aria-label="分组名" value="调料" style="flex: 1; height: 36px; border: none; border-bottom: 1px solid #E3E6E0; font-size: 14px; font-weight: 700; color: #3F4944; font-family: inherit; background: transparent; min-width: 0">
+</div>
+
+<div style="display: grid; grid-template-columns: 20px 52px 52px 1fr 32px; gap: 6px; align-items: center">
+<span aria-hidden="true" style="color: #A3ACA6; display: flex; justify-content: center"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>
+<input aria-label="数量" value="2" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; text-align: center; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<input aria-label="单位" value="勺" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; text-align: center; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<input aria-label="食材" value="生抽" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; padding: 0 10px; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<button aria-label="删除这一行" style="width: 32px; height: 44px; border: none; background: transparent; color: #8A938E; font-size: 18px; font-family: inherit; padding: 0">×</button>
+</div>
+
+<div style="display: grid; grid-template-columns: 20px 110px 1fr 32px; gap: 6px; align-items: center">
+<span aria-hidden="true" style="color: #A3ACA6; display: flex; justify-content: center"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>
+<button aria-pressed="true" style="height: 44px; border-radius: 10px; border: 1px solid #2E7A4B; background: #E6F1EA; color: #245F3B; font-size: 14px; font-family: inherit">适量</button>
+<input aria-label="食材" value="葱" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; padding: 0 10px; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<button aria-label="删除这一行" style="width: 32px; height: 44px; border: none; background: transparent; color: #8A938E; font-size: 18px; font-family: inherit; padding: 0">×</button>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 4px">
+<button style="height: 44px; border-radius: 10px; border: 1px dashed #C9CFC6; background: transparent; color: #18201B; font-size: 14px; font-family: inherit">+ 添加用料</button>
+<button style="height: 44px; border-radius: 10px; border: 1px dashed #C9CFC6; background: transparent; color: #5B6660; font-size: 14px; font-family: inherit">+ 添加分组</button>
+</div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">步骤</h2>
+
+<div style="background: #FFFFFF; border-radius: 18px; padding: 12px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<span style="width: 26px; height: 26px; border-radius: 13px; background: #E6F1EA; color: #245F3B; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">1</span>
+<button aria-label="删除步骤 1" style="width: 32px; height: 32px; border: none; background: transparent; color: #8A938E; font-size: 18px; font-family: inherit; padding: 0">×</button>
+</div>
+<label style="display: flex"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">步骤 1</span>
+<textarea rows="2" style="flex: 1; border-radius: 10px; border: 1px solid #E3E6E0; padding: 10px; font-size: 15px; line-height: 1.6; font-family: inherit; color: #18201B; resize: none">鸡翅两面划刀，冷水下锅，加姜片焯水，捞出沥干。</textarea>
+</label>
+<button style="align-self: flex-start; height: 34px; padding: 0 10px; border-radius: 10px; border: 1px solid #E3E6E0; background: #FFFFFF; color: #5B6660; font-size: 13px; font-family: inherit">+ 步骤图</button>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 18px; padding: 12px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<span style="width: 26px; height: 26px; border-radius: 13px; background: #E6F1EA; color: #245F3B; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">2</span>
+<button aria-label="删除步骤 2" style="width: 32px; height: 32px; border: none; background: transparent; color: #8A938E; font-size: 18px; font-family: inherit; padding: 0">×</button>
+</div>
+<label style="display: flex"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">步骤 2</span>
+<textarea rows="2" style="flex: 1; border-radius: 10px; border: 1px solid #E3E6E0; padding: 10px; font-size: 15px; line-height: 1.6; font-family: inherit; color: #18201B; resize: none">倒入可乐、生抽、老抽和冰糖，大火煮开转中小火 15 分钟。</textarea>
+</label>
+<div style="display: flex; gap: 8px; align-items: center">
+<button style="height: 34px; padding: 0 10px; border-radius: 10px; border: 1px solid #E3E6E0; background: #FFFFFF; color: #5B6660; font-size: 13px; font-family: inherit">+ 步骤图</button>
+<span style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #245F3B; background: #E6F1EA; border-radius: 999px; padding: 4px 10px">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9.5 2.5h5"></path></svg>
+识别到 15 分钟，做菜时可一键计时</span>
+</div>
+</div>
+
+<button style="height: 46px; border-radius: 12px; border: 1px dashed #C9CFC6; background: transparent; color: #18201B; font-size: 14px; font-family: inherit">+ 添加步骤</button>
+</section>
+
+<section style="background: #FFFFFF; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #5B6660">我的笔记
+<textarea rows="2" placeholder="比如：冰糖少放一点刚好" style="border-radius: 10px; border: 1px solid #E3E6E0; padding: 10px; font-size: 15px; line-height: 1.6; font-family: inherit; color: #18201B; resize: none"></textarea>
+</label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #5B6660">来源（可选）
+<input type="text" placeholder="链接、书名或“妈妈的做法”" style="height: 44px; border-radius: 10px; border: 1px solid #E3E6E0; padding: 0 12px; font-size: 15px; font-family: inherit; color: #18201B">
+</label>
+</section>
+
+<button style="height: 48px; border: none; background: transparent; color: #B3261E; font-size: 15px; font-family: inherit">删除这道菜谱</button>
+
+</main>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1600}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

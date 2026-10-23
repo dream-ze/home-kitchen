@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>拍照识别 · 核对</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E7A4B}a:hover{color:#245F3B}
+</style>
+</helmet>
+<div style="width: 390px; height: 1180px; box-sizing: border-box; background: #F4F5F1; color: #18201B; font-family: 'PingFang SC', 'Noto Sans SC', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<header style="height: 56px; display: grid; grid-template-columns: 80px 1fr 80px; align-items: center; padding: 8px 12px 0">
+<a href="Shopping.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 8px; font-size: 16px; text-decoration: none; color: #18201B">取消</a>
+<h1 style="margin: 0; text-align: center; font-size: 17px; font-weight: 700">核对识别结果</h1>
+<span></span>
+</header>
+
+<main style="flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 10px 20px 20px">
+
+<section style="display: flex; gap: 12px; align-items: center; background: #FFFFFF; border-radius: 18px; padding: 12px">
+<button aria-label="放大查看图片" style="width: 64px; height: 88px; flex: none; border-radius: 10px; border: 1px solid #E3E6E0; background: #E9ECE6; color: #5B6660; font-size: 11px; font-family: inherit; padding: 0">[订单截图]</button>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+<button style="height: 32px; padding: 0 10px; border-radius: 999px; border: none; background: #E6F1EA; color: #245F3B; font-size: 13px; font-family: inherit">识别为：买菜应用订单 ›</button>
+<span style="font-size: 13px; color: #5B6660">共 8 样 · 订单截图的数量通常最准</span>
+</div>
+</section>
+
+<div role="status" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px">
+<span style="color: #245F3B; background: #E6F1EA; border-radius: 999px; padding: 5px 10px">对上清单 4 样</span>
+<span style="color: #3F4944; background: #E7EAE4; border-radius: 999px; padding: 5px 10px">清单外 2 样</span>
+<span style="color: #7A350C; background: #FBEDE3; border-radius: 999px; padding: 5px 10px">需要确认 1 样</span>
+</div>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 14px; font-weight: 700">清单里的 · 会自动勾选为已买</h2>
+<div style="background: #FFFFFF; border-radius: 18px; padding: 2px 16px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 12px; min-height: 58px; border-bottom: 1px solid #ECEEEA">
+<span aria-hidden="true" style="width: 24px; height: 24px; flex: none; border-radius: 12px; background: #2E7A4B; color: #FFFFFF; font-size: 13px; display: flex; align-items: center; justify-content: center">✓</span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 16px">番茄 · 3 个</span><span style="font-size: 12px; color: #93400F">清单要 4 个，还差 1 个会留在清单里</span></span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 58px; border-bottom: 1px solid #ECEEEA">
+<span aria-hidden="true" style="width: 24px; height: 24px; flex: none; border-radius: 12px; background: #2E7A4B; color: #FFFFFF; font-size: 13px; display: flex; align-items: center; justify-content: center">✓</span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 16px">冬瓜 · 600 g</span><span style="font-size: 12px; color: #5B6660">清单要 500 g</span></span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 58px; border-bottom: 1px solid #ECEEEA">
+<span aria-hidden="true" style="width: 24px; height: 24px; flex: none; border-radius: 12px; background: #2E7A4B; color: #FFFFFF; font-size: 13px; display: flex; align-items: center; justify-content: center">✓</span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 16px">鸡蛋 · 10 个</span><span style="font-size: 12px; color: #5B6660">清单要 6 个 · 原文“土鸡蛋 10 枚装”</span></span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 58px">
+<span aria-hidden="true" style="width: 24px; height: 24px; flex: none; border-radius: 12px; background: #2E7A4B; color: #FFFFFF; font-size: 13px; display: flex; align-items: center; justify-content: center">✓</span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 16px">葱 · 1 把</span><span style="font-size: 12px; color: #5B6660">清单要 1 把</span></span>
+</div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 14px; font-weight: 700">清单外的 · 要不要放进冰箱</h2>
+<div style="background: #FFFFFF; border-radius: 18px; padding: 2px 16px; display: flex; flex-direction: column">
+<sc-for list="{{extras}}" as="x" hint-placeholder-count="2">
+<div style="{{x.rowStyle}}">
+<span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="{{x.nameStyle}}">{{x.name}}</span><span style="font-size: 12px; color: #5B6660">{{x.sub}}</span></span>
+<button role="checkbox" aria-checked="{{x.checked}}" aria-label="{{x.aria}}" onClick="{{x.toggle}}" style="{{x.btnStyle}}">{{x.btn}}</button>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 14px; font-weight: 700">需要确认</h2>
+<div style="background: #FBEDE3; border-radius: 18px; padding: 12px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; color: #7A350C">原文“有机小青菜 2 份”，认成了下面这样，对吗？</span>
+<div style="display: grid; grid-template-columns: 1fr 64px 56px; gap: 6px">
+<button style="height: 44px; border-radius: 10px; border: 1.5px dashed #C2551F; background: #FFFFFF; color: #18201B; font-size: 15px; font-family: inherit; text-align: left; padding: 0 10px">青菜 ›</button>
+<input aria-label="数量" value="2" style="height: 44px; border-radius: 10px; border: 1.5px solid #C2551F; background: #FFFFFF; text-align: center; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+<input aria-label="单位" value="把" style="height: 44px; border-radius: 10px; border: 1.5px solid #C2551F; background: #FFFFFF; text-align: center; font-size: 15px; font-family: inherit; color: #18201B; min-width: 0">
+</div>
+</div>
+</section>
+
+<section style="background: #EBEEE8; border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; font-weight: 500; color: #3F4944">清单里还没买到</span>
+<span style="font-size: 13px; color: #5B6660">排骨 500 g、可乐、食用油 · 这些还留在购物清单里</span>
+</section>
+
+</main>
+
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 20px 30px; background: #FFFFFF; border-top: 1px solid #E3E6E0">
+<span style="font-size: 12px; color: #5B6660; text-align: center">图片只用来识别，入库后不保存</span>
+<a href="StockIn.dc.html" style="height: 52px; border-radius: 16px; background: #2E7A4B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">下一步：确认放哪儿（{{count}} 样）</a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1180}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { inc: { yogurt: true, tissue: false } };
+}
+renderVals() {
+var self = this;
+var inc = (this.state && this.state.inc) || { yogurt: true, tissue: false };
+var list = [
+{ id: 'yogurt', name: '酸奶 · 4 杯', sub: '食品 · 默认放进冰箱' },
+{ id: 'tissue', name: '抽纸 · 1 提', sub: '非食品 · 默认不放进冰箱' }
+];
+var extras = list.map(function (x, i) {
+var on = !!inc[x.id];
+return {
+name: x.name, sub: x.sub,
+checked: on ? 'true' : 'false',
+aria: (on ? '不放进冰箱 ' : '放进冰箱 ') + x.name,
+btn: on ? '✓ 放进冰箱' : '放进冰箱',
+nameStyle: 'font-size: 16px; ' + (on ? 'color: #18201B;' : 'color: #5B6660;'),
+btnStyle: 'height: 38px; padding: 0 12px; flex: none; border-radius: 999px; font-size: 13px; font-family: inherit; ' + (on ? 'border: none; background: #2E7A4B; color: #FFFFFF;' : 'border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B;'),
+rowStyle: 'display: flex; align-items: center; gap: 12px; min-height: 58px;' + (i < list.length - 1 ? ' border-bottom: 1px solid #ECEEEA;' : ''),
+toggle: function () { var n = Object.assign({}, inc); n[x.id] = !on; self.setState({ inc: n }); }
+};
+});
+var count = 4 + 1;
+Object.keys(inc).forEach(function (k) { if (inc[k]) count++; });
+return { extras: extras, count: count };
+}
+}
+</script>
+</body>
+</html>

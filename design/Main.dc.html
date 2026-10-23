@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>今天</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E7A4B}a:hover{color:#245F3B}
+</style>
+</helmet>
+<div style="width: 390px; height: 1380px; box-sizing: border-box; background: #F4F5F1; color: #18201B; font-family: 'PingFang SC', 'Noto Sans SC', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<main style="flex: 1; display: flex; flex-direction: column; gap: 22px; padding: 16px 20px 24px">
+
+<a href="Cook.dc.html" style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border-radius: 999px; background: #18201B; color: #FFFFFF; text-decoration: none; font-size: 14px">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #7FCB9B; flex: none"></span>
+<span style="flex: 1">正在做 可乐鸡翅 · 第 3 步</span>
+<span style="font-variant-numeric: tabular-nums; font-weight: 700">12:34</span>
+<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+
+<header style="display: flex; justify-content: space-between; align-items: flex-end">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #5B6660">10月20日 · 周二</span>
+<h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: 0.5px">今天</h1>
+</div>
+<div style="display: flex; gap: 8px">
+<a href="WeekPlan.dc.html" aria-label="打开本周菜单" style="width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; border: 1px solid #E3E6E0; background: #FFFFFF; color: #18201B; display: flex; align-items: center; justify-content: center">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>
+</a>
+<a href="Settings.dc.html" aria-label="设置" style="width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; border: 1px solid #E3E6E0; background: #FFFFFF; color: #18201B; display: flex; align-items: center; justify-content: center">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+</a>
+</div>
+</header>
+
+<section style="background: #FFFFFF; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<span style="font-size: 14px; color: #5B6660">今日已记录</span>
+<span style="font-size: 12px; color: #5B6660">含 1 条拍照估算</span>
+</div>
+<div style="display: flex; align-items: baseline; gap: 6px">
+<span style="font-size: 16px; color: #5B6660">约</span>
+<span style="font-size: 42px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums">{{todayKcal}}</span>
+<span style="font-size: 15px; color: #5B6660">kcal</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="background: #F4F5F1; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; color: #5B6660">蛋白质</span>
+<span style="font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums">62 g</span>
+</div>
+<div style="background: #F4F5F1; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; color: #5B6660">脂肪</span>
+<span style="font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums">41 g</span>
+</div>
+<div style="background: #F4F5F1; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; color: #5B6660">碳水</span>
+<span style="font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums">138 g</span>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px; border-top: 1px solid #ECEEEA">
+<div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 10px">
+<span style="font-size: 13px; color: #5B6660">近 7 天</span>
+<span style="font-size: 13px; color: #3F4944">平均每天约 1,790 kcal</span>
+</div>
+<div role="img" aria-label="近 7 天每天记录的热量" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; align-items: end; height: 64px">
+<sc-for list="{{week}}" as="d" hint-placeholder-count="7">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; height: 64px; justify-content: flex-end">
+<div style="{{d.bar}}"></div>
+<span style="{{d.labelStyle}}">{{d.label}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px">
+<a href="MealPhoto.dc.html" style="height: 48px; border-radius: 14px; background: #2E7A4B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 15px; font-weight: 500">
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.5-2h4.4l1.5 2h1.8A2.5 2.5 0 0 1 20 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+拍照记录
+</a>
+<button style="height: 48px; border-radius: 14px; background: #FFFFFF; border: 1px solid #D5DAD3; color: #18201B; font-size: 15px; font-family: inherit">复制昨天</button>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<h2 style="margin: 0; font-size: 19px; font-weight: 700">今日菜单</h2>
+<a href="WeekPlan.dc.html" style="font-size: 14px; text-decoration: none; min-height: 44px; display: flex; align-items: center">本周菜单 ›</a>
+</div>
+<div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px; display: flex; flex-direction: column">
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #ECEEEA">
+<span style="width: 34px; font-size: 13px; color: #5B6660">早餐</span>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 16px; font-weight: 500">燕麦牛奶</span>
+<span style="font-size: 13px; color: #5B6660">1 份 · 约 320 kcal</span>
+</div>
+<span style="font-size: 12px; color: #245F3B; background: #E6F1EA; border-radius: 999px; padding: 4px 10px">已记录</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #ECEEEA">
+<span style="width: 34px; font-size: 13px; color: #5B6660">午餐</span>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 16px; font-weight: 500">宫保鸡丁 · 米饭</span>
+<span style="font-size: 13px; color: #5B6660">拍照估算 · 约 650–880 kcal</span>
+</div>
+<span style="font-size: 12px; color: #245F3B; background: #E6F1EA; border-radius: 999px; padding: 4px 10px">已记录</span>
+</div>
+
+<div style="display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid #ECEEEA">
+<span style="width: 34px; flex: none; font-size: 13px; color: #5B6660; padding-top: 2px">晚餐</span>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 16px; font-weight: 500">可乐鸡翅</span>
+<span style="font-size: 13px; color: #5B6660">计划 2 份 · 约 410 kcal / 份</span>
+</div>
+<sc-if value="{{eaten}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 12px; color: #245F3B; background: #E6F1EA; border-radius: 999px; padding: 4px 10px">已记录</span>
+</sc-if>
+</div>
+<sc-if value="{{notEaten}}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 8px">
+<a href="RecipeDetail.dc.html" style="height: 44px; border-radius: 12px; border: 1px solid #D5DAD3; color: #18201B; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 14px">开始做</a>
+<button onClick="{{markEaten}}" style="height: 44px; border-radius: 12px; border: none; background: #2E7A4B; color: #FFFFFF; font-size: 14px; font-weight: 500; font-family: inherit">✓ 按计划吃了</button>
+</div>
+</sc-if>
+<sc-if value="{{eaten}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 6px; background: #F4F5F1; border-radius: 12px; padding: 8px 8px 6px 12px">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 13px; color: #3F4944; flex: none">我吃了</span>
+<div style="display: flex; align-items: center; background: #FFFFFF; border: 1px solid #E3E6E0; border-radius: 999px; height: 40px; flex: none">
+<button aria-label="少半份" onClick="{{less}}" style="width: 40px; height: 38px; border: none; background: transparent; font-size: 18px; color: #18201B; font-family: inherit">−</button>
+<span style="min-width: 52px; text-align: center; font-size: 14px; font-weight: 500">{{servText}}</span>
+<button aria-label="多半份" onClick="{{more}}" style="width: 40px; height: 38px; border: none; background: transparent; font-size: 18px; color: #18201B; font-family: inherit">+</button>
+</div>
+<span style="flex: 1; text-align: right; font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; padding-right: 4px">约 {{mealKcal}} kcal</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between">
+<span style="font-size: 12px; color: #5B6660">库存已按计划 2 份扣减</span>
+<button onClick="{{undo}}" style="height: 32px; padding: 0 10px; border: none; background: transparent; color: #2E7A4B; font-size: 13px; font-family: inherit">撤销</button>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px 0">
+<span style="width: 34px; font-size: 13px; color: #5B6660">加餐</span>
+<a href="PickRecipe.dc.html" style="flex: 1; height: 44px; box-sizing: border-box; border-radius: 12px; border: 1px dashed #C9CFC6; color: #5B6660; font-size: 14px; text-decoration: none; display: flex; align-items: center; padding: 0 14px">+ 从菜谱添加</a>
+</div>
+
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<h2 style="margin: 0; font-size: 19px; font-weight: 700">快过期</h2>
+<a href="Fridge.dc.html" style="font-size: 14px; text-decoration: none; min-height: 44px; display: flex; align-items: center">冰箱 ›</a>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<a href="Fridge.dc.html" style="height: 36px; padding: 0 12px; border-radius: 999px; background: #FBE9E7; color: #9E2219; font-size: 14px; text-decoration: none; display: flex; align-items: center">酸奶 · 已过期</a>
+<a href="PickRecipe.dc.html" style="height: 36px; padding: 0 12px; border-radius: 999px; background: #FBEDE3; color: #93400F; font-size: 14px; text-decoration: none; display: flex; align-items: center">鸡翅中 · 明天</a>
+<a href="PickRecipe.dc.html" style="height: 36px; padding: 0 12px; border-radius: 999px; background: #FBEDE3; color: #93400F; font-size: 14px; text-decoration: none; display: flex; align-items: center">菠菜 · 2 天</a>
+<a href="PickRecipe.dc.html" style="height: 36px; padding: 0 12px; border-radius: 999px; background: #FBEDE3; color: #93400F; font-size: 14px; text-decoration: none; display: flex; align-items: center">牛奶 · 3 天</a>
+</div>
+<div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px; display: flex; flex-direction: column">
+<span style="font-size: 13px; color: #5B6660; padding-top: 12px">能用掉它们的菜</span>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #ECEEEA">
+<div aria-hidden="true" style="width: 48px; height: 48px; border-radius: 12px; background: #E6F1EA; color: #245F3B; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700">菠</div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 16px; font-weight: 500">蒜蓉菠菜</span>
+<span style="font-size: 13px; color: #5B6660">用掉 菠菜 · 10 分钟</span>
+</div>
+<button style="height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid #2E7A4B; background: #FFFFFF; color: #2E7A4B; font-size: 14px; font-family: inherit">加入晚餐</button>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 0">
+<div aria-hidden="true" style="width: 48px; height: 48px; border-radius: 12px; background: #FBEDE3; color: #93400F; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700">翅</div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 16px; font-weight: 500">奶香烤鸡翅</span>
+<span style="font-size: 13px; color: #5B6660">用掉 鸡翅中、牛奶 · 30 分钟</span>
+</div>
+<button style="height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid #2E7A4B; background: #FFFFFF; color: #2E7A4B; font-size: 14px; font-family: inherit">加入明天</button>
+</div>
+</div>
+</section>
+
+</main>
+
+<nav aria-label="主导航" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #FFFFFF; border-top: 1px solid #E3E6E0; padding: 6px 8px 28px">
+<a href="Main.dc.html" aria-current="page" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2E7A4B; font-size: 11px; font-weight: 700">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path></svg>
+今天
+</a>
+<a href="Recipes.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"></path><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3"></path><path d="M9 7.5h6M9 11h4"></path></svg>
+菜谱
+</a>
+<a href="Shopping.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 10.5h10.1L20 7.5H6.3"></path><circle cx="9" cy="19" r="1.5"></circle><circle cx="17" cy="19" r="1.5"></circle></svg>
+购物
+</a>
+<a href="Fridge.dc.html" style="min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6660; font-size: 11px">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"></rect><path d="M6 10h12M9.5 5.5v2M9.5 13v3"></path></svg>
+冰箱
+</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1380}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { eaten: false, sv: 1 };
+}
+renderVals() {
+var self = this;
+var eaten = !!(this.state && this.state.eaten);
+var sv = (this.state && this.state.sv) || 1;
+var meal = Math.round(410 * sv);
+var today = 1180 + (eaten ? meal : 0);
+var days = [['三', 1720], ['四', 1540], ['五', 1980], ['六', 2100], ['日', 1650], ['一', 1600], ['今', today]];
+var max = 2200;
+var week = days.map(function (d, i) {
+var isToday = i === days.length - 1;
+var h = Math.max(4, Math.round(d[1] / max * 44));
+return {
+label: d[0],
+bar: 'width: 100%; max-width: 22px; height: ' + h + 'px; border-radius: 6px; background: ' + (isToday ? '#2E7A4B' : '#D5DAD3') + ';',
+labelStyle: 'font-size: 11px; ' + (isToday ? 'color: #245F3B; font-weight: 700;' : 'color: #5B6660;')
+};
+});
+return {
+eaten: eaten,
+notEaten: !eaten,
+todayKcal: today.toLocaleString('en-US'),
+week: week,
+servText: sv + ' 份',
+mealKcal: meal,
+less: function () { self.setState({ sv: Math.max(0.5, sv - 0.5) }); },
+more: function () { self.setState({ sv: Math.min(4, sv + 0.5) }); },
+markEaten: function () { self.setState({ eaten: true, sv: 1 }); },
+undo: function () { self.setState({ eaten: false, sv: 1 }); }
+};
+}
+}
+</script>
+</body>
+</html>

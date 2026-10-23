@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>拍照记录这一餐</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E7A4B}a:hover{color:#245F3B}
+</style>
+</helmet>
+<div style="width: 390px; height: 1300px; box-sizing: border-box; background: #F4F5F1; color: #18201B; font-family: 'PingFang SC', 'Noto Sans SC', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<header style="height: 56px; display: grid; grid-template-columns: 80px 1fr 80px; align-items: center; padding: 8px 12px 0">
+<a href="Main.dc.html" aria-label="关闭" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #18201B">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+</a>
+<h1 style="margin: 0; text-align: center; font-size: 17px; font-weight: 700">记录这一餐</h1>
+<span></span>
+</header>
+
+<main style="flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 8px 20px 24px">
+
+<div style="display: flex; gap: 8px; align-items: center">
+<button aria-pressed="false" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 14px; font-family: inherit">早餐</button>
+<button aria-pressed="true" style="height: 36px; padding: 0 14px; border-radius: 999px; border: none; background: #18201B; color: #FFFFFF; font-size: 14px; font-family: inherit">午餐</button>
+<button aria-pressed="false" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 14px; font-family: inherit">晚餐</button>
+<button aria-pressed="false" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B; font-size: 14px; font-family: inherit">加餐</button>
+</div>
+
+<div style="height: 180px; border-radius: 18px; background: #E9ECE6; color: #5B6660; display: flex; align-items: center; justify-content: center; font-size: 14px">[饭菜照片]</div>
+
+<section style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 14px; color: #5B6660">这一餐大约</span>
+<div style="display: flex; align-items: baseline; gap: 6px">
+<span style="font-size: 36px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums">{{totalMin}}–{{totalMax}}</span>
+<span style="font-size: 15px; color: #5B6660">kcal</span>
+</div>
+</div>
+<button aria-pressed="{{halfPressed}}" onClick="{{toggleHalf}}" style="{{halfStyle}}">只吃了一半</button>
+</section>
+
+<div style="display: flex; flex-direction: column; gap: 10px; background: #FBEDE3; color: #7A350C; border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height: 1.55">
+<div style="display: flex; gap: 10px; align-items: flex-start">
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5.5M12 7.5v.01"></path></svg>
+<span>拍照估算通常偏低，尤其是油。看起来油多的话，直接点下面补上。</span>
+</div>
+<div style="display: flex; gap: 8px; padding-left: 28px">
+<button onClick="{{addOil}}" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid #C2551F; background: #FFFFFF; color: #7A350C; font-size: 13px; font-family: inherit">+1 勺油 约 +90</button>
+<sc-if value="{{hasOil}}" hint-placeholder-val="{{ false }}">
+<button onClick="{{removeOil}}" style="height: 36px; padding: 0 12px; border-radius: 999px; border: none; background: transparent; color: #7A350C; font-size: 13px; font-family: inherit; text-decoration: underline">已加 {{oil}} 勺 · 撤销</button>
+</sc-if>
+</div>
+</div>
+
+<section style="background: #FFFFFF; border-radius: 18px; padding: 4px 16px; display: flex; flex-direction: column">
+<sc-for list="{{items}}" as="item" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 0; border-bottom: 1px solid #ECEEEA">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<span style="font-size: 16px; font-weight: 500">{{item.name}}</span>
+<span style="font-size: 14px; font-variant-numeric: tabular-nums">{{item.kcal}}</span>
+</div>
+<span style="font-size: 12px; color: #5B6660; margin-top: -6px">估计 {{item.grams}} · 点菜名可修改</span>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{item.pills}}" as="pill" hint-placeholder-count="4">
+<button aria-pressed="{{pill.pressed}}" onClick="{{pill.pick}}" style="{{pill.style}}">{{pill.label}}</button>
+</sc-for>
+</div>
+</div>
+</sc-for>
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0 14px">
+<span style="font-size: 13px; color: #5B6660">漏了什么？</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<button style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px dashed #C9CFC6; background: transparent; color: #18201B; font-size: 13px; font-family: inherit">+ 酱料</button>
+<button style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px dashed #C9CFC6; background: transparent; color: #18201B; font-size: 13px; font-family: inherit">+ 饮料</button>
+<button style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px dashed #C9CFC6; background: transparent; color: #18201B; font-size: 13px; font-family: inherit">+ 汤</button>
+<button style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px dashed #C9CFC6; background: transparent; color: #18201B; font-size: 13px; font-family: inherit">+ 其他</button>
+</div>
+</div>
+</section>
+
+<label style="display: flex; align-items: center; gap: 8px; height: 48px; border-radius: 14px; border: 1px solid #E3E6E0; background: #FFFFFF; padding: 0 6px 0 14px">
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">一句话纠正</span>
+<input type="text" placeholder="一句话纠正，如“米饭只吃了半碗”" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 14px; font-family: inherit; color: #18201B">
+<button aria-label="重新估算" style="width: 38px; height: 38px; border-radius: 10px; border: none; background: #18201B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; padding: 0">
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+</button>
+</label>
+
+<div style="display: flex; align-items: center; gap: 10px; background: #FFFFFF; border: 1px solid #E3E6E0; border-radius: 14px; padding: 10px 10px 10px 14px">
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; color: #5B6660">“宫保鸡丁油很多”</span>
+<span style="font-size: 15px; font-weight: 500">宫保鸡丁 约 +120 kcal</span>
+</div>
+<button style="height: 38px; padding: 0 12px; border: none; background: transparent; color: #5B6660; font-size: 14px; font-family: inherit">不用了</button>
+<button style="height: 38px; padding: 0 14px; border-radius: 10px; border: none; background: #18201B; color: #FFFFFF; font-size: 14px; font-family: inherit">确认修改</button>
+</div>
+
+<a href="Main.dc.html" style="height: 52px; border-radius: 16px; background: #2E7A4B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500">保存记录</a>
+
+</main>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1300}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { portions: { gb: 1, rice: 1, cuke: 1 }, half: false, oil: 0 };
+}
+renderVals() {
+var self = this;
+var st = this.state || {};
+var ps = st.portions || { gb: 1, rice: 1, cuke: 1 };
+var half = !!st.half;
+var oil = st.oil || 0;
+var steps = [0.5, 1, 1.5, 2];
+var labels = ['半份', '1 份', '1.5 份', '2 份'];
+var base = [
+{ id: 'gb', name: '宫保鸡丁', gMin: 180, gMax: 240, kMin: 400, kMax: 520 },
+{ id: 'rice', name: '米饭', gMin: 150, gMax: 200, kMin: 175, kMax: 230 },
+{ id: 'cuke', name: '拍黄瓜', gMin: 100, gMax: 150, kMin: 75, kMax: 130 }
+];
+var on = 'height: 40px; border-radius: 10px; border: 1.5px solid #2E7A4B; background: #E6F1EA; color: #245F3B; font-size: 14px; font-weight: 500; font-family: inherit; padding: 0';
+var off = 'height: 40px; border-radius: 10px; border: 1px solid #E3E6E0; background: #FFFFFF; color: #18201B; font-size: 14px; font-family: inherit; padding: 0';
+var r5 = function (n) { return Math.round(n / 5) * 5; };
+var m = half ? 0.5 : 1;
+var tMin = 0, tMax = 0;
+var items = base.map(function (b) {
+var p = ps[b.id];
+var kMin = r5(b.kMin * p * m), kMax = r5(b.kMax * p * m);
+tMin += kMin; tMax += kMax;
+return {
+name: b.name,
+kcal: kMin + '–' + kMax + ' kcal',
+grams: Math.round(b.gMin * p * m) + '–' + Math.round(b.gMax * p * m) + ' g',
+pills: steps.map(function (v, i) {
+return {
+label: labels[i],
+pressed: v === p ? 'true' : 'false',
+style: v === p ? on : off,
+pick: function () { var n = Object.assign({}, ps); n[b.id] = v; self.setState({ portions: n }); }
+};
+})
+};
+});
+tMin += oil * 90; tMax += oil * 90;
+return {
+items: items,
+totalMin: tMin,
+totalMax: tMax,
+oil: oil,
+hasOil: oil > 0,
+halfPressed: half ? 'true' : 'false',
+halfStyle: 'height: 40px; flex: none; padding: 0 14px; border-radius: 999px; font-size: 14px; font-family: inherit; ' + (half ? 'border: 1.5px solid #2E7A4B; background: #E6F1EA; color: #245F3B; font-weight: 500;' : 'border: 1px solid #D5DAD3; background: #FFFFFF; color: #18201B;'),
+toggleHalf: function () { self.setState({ half: !half }); },
+addOil: function () { self.setState({ oil: oil + 1 }); },
+removeOil: function () { self.setState({ oil: 0 }); }
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>烹饪模式</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#7FCB9B}a:hover{color:#A6DDB9}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #141A16; color: #F2F4F0; font-family: 'PingFang SC', 'Noto Sans SC', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<header style="display: grid; grid-template-columns: 60px 1fr 96px; align-items: center; padding: 16px 12px 0">
+<a href="Recipes.dc.html" aria-label="退出烹饪模式" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #F2F4F0">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+</a>
+<h1 style="margin: 0; text-align: center; font-size: 17px; font-weight: 700">可乐鸡翅</h1>
+<span style="justify-self: end; display: flex; align-items: center; gap: 4px; font-size: 12px; color: #A9B3AD; background: #232B26; border-radius: 999px; padding: 5px 10px">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 3v2M12 19v2M3 12h2M19 12h2"></path></svg>
+常亮
+</span>
+</header>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 16px 20px 0" aria-hidden="true">
+<sc-for list="{{bars}}" as="bar" hint-placeholder-count="4">
+<div style="{{bar.style}}"></div>
+</sc-for>
+</div>
+
+<main style="flex: 1; display: flex; flex-direction: column; gap: 22px; padding: 28px 24px 16px">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<span style="font-size: 15px; color: #A9B3AD">第 {{stepNo}} / 4 步</span>
+<span style="font-size: 12px; color: #A9B3AD">进度已保存，切出去也不会丢</span>
+</div>
+<p style="margin: 0; font-size: 27px; line-height: 1.6; font-weight: 500">{{text}}</p>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{ingredients}}" as="ing" hint-placeholder-count="3">
+<span style="font-size: 15px; color: #DDE3DF; background: #232B26; border-radius: 999px; padding: 6px 12px">{{ing}}</span>
+</sc-for>
+</div>
+
+<sc-if value="{{hasTimer}}" hint-placeholder-val="{{ true }}">
+<div style="background: #1E2621; border: 1px solid #2E3832; border-radius: 20px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #A9B3AD">计时</span>
+<span style="font-size: 46px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums">15:00</span>
+</div>
+<button style="height: 52px; padding: 0 22px; border-radius: 999px; border: none; background: #F2F4F0; color: #141A16; font-size: 16px; font-weight: 700; font-family: inherit">开始计时</button>
+</div>
+</sc-if>
+</main>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 12px 20px 36px">
+<button onClick="{{prev}}" style="height: 60px; border-radius: 18px; border: 1px solid #3A4540; background: transparent; color: #F2F4F0; font-size: 17px; font-family: inherit">上一步</button>
+<sc-if value="{{isLast}}" hint-placeholder-val="{{ false }}">
+<a href="Main.dc.html" style="height: 60px; border-radius: 18px; background: #2E7A4B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700">做完了</a>
+</sc-if>
+<sc-if value="{{notLast}}" hint-placeholder-val="{{ true }}">
+<button onClick="{{next}}" style="height: 60px; border-radius: 18px; border: none; background: #2E7A4B; color: #FFFFFF; font-size: 17px; font-weight: 700; font-family: inherit">下一步</button>
+</sc-if>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { step: 2 };
+}
+renderVals() {
+var self = this;
+var steps = [
+{ text: '鸡翅两面划刀，冷水下锅，加 3 片姜焯水，捞出沥干。', ingredients: ['鸡翅中 8 个', '生姜 3 片'], timer: false },
+{ text: '少油小火，把鸡翅煎到两面金黄。', ingredients: ['食用油 少许'], timer: false },
+{ text: '倒入可乐、生抽、老抽和冰糖，大火煮开后转中小火。', ingredients: ['可乐 330 ml', '生抽 2 勺', '老抽 1 勺', '冰糖 10 g'], timer: true },
+{ text: '大火收汁，汤汁浓稠后撒葱花出锅。', ingredients: ['葱 适量'], timer: false }
+];
+var i = (this.state && typeof this.state.step === 'number') ? this.state.step : 2;
+var s = steps[i];
+return {
+stepNo: i + 1,
+text: s.text,
+ingredients: s.ingredients,
+hasTimer: s.timer,
+isLast: i === steps.length - 1,
+notLast: i !== steps.length - 1,
+bars: steps.map(function (_, k) {
+return { style: 'height: 4px; border-radius: 2px; background: ' + (k <= i ? '#7FCB9B' : '#2E3832') };
+}),
+prev: function () { self.setState({ step: Math.max(0, i - 1) }); },
+next: function () { self.setState({ step: Math.min(steps.length - 1, i + 1) }); }
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>菜谱详情 · 可乐鸡翅</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E7A4B}a:hover{color:#245F3B}
+</style>
+</helmet>
+<div style="width: 390px; height: 1640px; box-sizing: border-box; background: #F4F5F1; color: #18201B; font-family: 'PingFang SC', 'Noto Sans SC', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<div style="height: 250px; flex: none; background: #F3E3D6; color: #93400F; display: flex; align-items: center; justify-content: center; font-size: 14px; position: relative">
+[成品图]
+<a href="Recipes.dc.html" aria-label="返回菜谱" style="position: absolute; left: 16px; top: 16px; width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; color: #18201B; display: flex; align-items: center; justify-content: center">
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+</a>
+<a href="EditRecipe.dc.html" aria-label="编辑菜谱" style="position: absolute; right: 16px; top: 16px; width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; color: #18201B; display: flex; align-items: center; justify-content: center">
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path><path d="M13.5 6.5l4 4"></path></svg>
+</a>
+</div>
+
+<main style="flex: 1; display: flex; flex-direction: column; gap: 18px; padding: 18px 20px 20px; margin-top: -20px; background: #F4F5F1; border-radius: 22px 22px 0 0; position: relative">
+
+<header style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 0.5px">可乐鸡翅</h1>
+<div style="display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 13px; color: #5B6660">
+<span>30 分钟</span><span>简单</span><span>做过 3 次 · 上次 10月12日</span>
+</div>
+<div style="display: flex; gap: 6px">
+<span style="font-size: 12px; color: #3F4944; background: #E7EAE4; border-radius: 999px; padding: 4px 10px">下饭</span>
+<span style="font-size: 12px; color: #3F4944; background: #E7EAE4; border-radius: 999px; padding: 4px 10px">鸡肉</span>
+</div>
+</header>
+
+<section style="background: #FFFFFF; border-radius: 18px; padding: 14px 16px; display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5B6660">每份约</span><span style="font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">410 kcal</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5B6660">蛋白质</span><span style="font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums">28 g</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5B6660">脂肪</span><span style="font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums">22 g</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5B6660">碳水</span><span style="font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums">24 g</span></div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<h2 style="margin: 0; font-size: 19px; font-weight: 700">用料</h2>
+<div style="display: flex; align-items: center; gap: 4px; background: #FFFFFF; border: 1px solid #E3E6E0; border-radius: 999px; height: 44px; padding: 0 2px">
+<button aria-label="减少份数" onClick="{{dec}}" style="width: 40px; height: 40px; border-radius: 20px; border: none; background: transparent; font-size: 20px; color: #18201B; font-family: inherit">−</button>
+<span style="min-width: 52px; text-align: center; font-size: 15px; font-weight: 500">{{servings}} 人份</span>
+<button aria-label="增加份数" onClick="{{inc}}" style="width: 40px; height: 40px; border-radius: 20px; border: none; background: transparent; font-size: 20px; color: #18201B; font-family: inherit">+</button>
+</div>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 18px; padding: 4px 16px; display: flex; flex-direction: column">
+<sc-for list="{{ingredients}}" as="ing" hint-placeholder-count="9">
+<div style="{{ing.rowStyle}}">
+<span style="flex: 1; font-size: 16px">{{ing.name}}</span>
+<span style="font-size: 15px; font-variant-numeric: tabular-nums; color: #3F4944">{{ing.amount}}</span>
+<span style="{{ing.badgeStyle}}">{{ing.badge}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; background: #FBEDE3; border-radius: 16px; padding: 10px 10px 10px 16px">
+<span style="flex: 1; font-size: 14px; color: #7A350C">还缺 可乐、八角</span>
+<a href="Shopping.dc.html" style="height: 44px; padding: 0 16px; border-radius: 12px; background: #FFFFFF; border: 1px solid #C2551F; color: #7A350C; text-decoration: none; display: flex; align-items: center; font-size: 14px; font-weight: 500">加进购物清单</a>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 19px; font-weight: 700">步骤</h2>
+<ol style="margin: 0; padding: 4px 16px; background: #FFFFFF; border-radius: 18px; list-style: none; display: flex; flex-direction: column">
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="4">
+<li style="{{st.rowStyle}}">
+<span style="flex: none; width: 26px; height: 26px; border-radius: 13px; background: #E6F1EA; color: #245F3B; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{st.no}}</span>
+<span style="flex: 1; font-size: 16px; line-height: 1.65"><sc-for list="{{st.segs}}" as="seg" hint-placeholder-count="3"><span style="{{seg.style}}">{{seg.t}}</span></sc-for></span>
+</li>
+</sc-for>
+</ol>
+</section>
+
+<section style="background: #FFFFFF; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+<h2 style="margin: 0; font-size: 14px; font-weight: 500; color: #5B6660">我的笔记</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.6">冰糖少放一点刚好，收汁别走开。</p>
+</section>
+
+<div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #5B6660; padding: 0 2px">
+<span>来源：小红书截图 2 张</span>
+<button style="height: 36px; border: none; background: transparent; color: #2E7A4B; font-size: 13px; font-family: inherit; padding: 0">查看原图</button>
+</div>
+
+</main>
+
+<div style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; padding: 12px 20px 30px; background: #FFFFFF; border-top: 1px solid #E3E6E0">
+<a href="WeekPlan.dc.html" style="height: 52px; border-radius: 16px; border: 1px solid #D5DAD3; color: #18201B; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 16px">加入菜单</a>
+<a href="Cook.dc.html" style="height: 52px; border-radius: 16px; background: #2E7A4B; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 16px; font-weight: 700">
+<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"></path></svg>
+开始做
+</a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1640}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { servings: 2 };
+}
+renderVals() {
+var self = this;
+var sv = (this.state && this.state.servings) || 2;
+var k = sv / 2;
+var fmt = function (q) { var v = Math.round(q * k * 10) / 10; return String(v); };
+var base = [
+{ n: '鸡翅中', q: 8, u: '个', s: 'have' },
+{ n: '可乐', q: 330, u: 'ml', s: 'miss' },
+{ n: '生姜', q: 3, u: '片', s: 'have' },
+{ n: '生抽', q: 2, u: '勺', s: 'staple' },
+{ n: '老抽', q: 1, u: '勺', s: 'staple' },
+{ n: '料酒', q: 1, u: '勺', s: 'staple' },
+{ n: '冰糖', q: 10, u: 'g', s: 'staple' },
+{ n: '八角', q: 2, u: '个', s: 'miss' },
+{ n: '葱', q: null, u: '适量', s: 'have' }
+];
+var badges = {
+have: { t: '冰箱有', st: 'color: #245F3B; background: #E6F1EA;' },
+staple: { t: '常备', st: 'color: #3F4944; background: #EEF0EC;' },
+miss: { t: '缺', st: 'color: #7A350C; background: #FBEDE3;' }
+};
+var amt = {};
+var ingredients = base.map(function (b, i) {
+var a = b.q == null ? b.u : fmt(b.q) + ' ' + b.u;
+amt[b.n] = a;
+return {
+name: b.n,
+amount: a,
+badge: badges[b.s].t,
+badgeStyle: 'width: 52px; text-align: center; font-size: 12px; border-radius: 999px; padding: 3px 0; ' + badges[b.s].st,
+rowStyle: 'display: flex; align-items: center; gap: 12px; min-height: 48px;' + (i < base.length - 1 ? ' border-bottom: 1px solid #ECEEEA;' : '')
+};
+});
+var T = function (t) { return { t: t, style: '' }; };
+var H = function (n) { return { t: n + ' ' + amt[n], style: 'color: #245F3B; font-weight: 500; background: #E6F1EA; border-radius: 6px; padding: 1px 5px;' }; };
+var raw = [
+[T('鸡翅两面划刀，冷水下锅，加 '), H('生姜'), T(' 焯水，捞出沥干。')],
+[T('少油小火，把 '), H('鸡翅中'), T(' 煎到两面金黄。')],
+[T('倒入 '), H('可乐'), T('、'), H('生抽'), T('、'), H('老抽'), T('、'), H('冰糖'), T('，大火煮开转中小火 '), { t: '15 分钟', style: 'color: #93400F; font-weight: 500; background: #FBEDE3; border-radius: 6px; padding: 1px 5px;' }, T('。')],
+[T('大火收汁，撒 '), H('葱'), T(' 出锅。')]
+];
+var steps = raw.map(function (segs, i) {
+return { no: i + 1, segs: segs, rowStyle: 'display: flex; gap: 12px; padding: 14px 0;' + (i < raw.length - 1 ? ' border-bottom: 1px solid #ECEEEA;' : '') };
+});
+return {
+servings: sv,
+ingredients: ingredients,
+steps: steps,
+dec: function () { self.setState({ servings: Math.max(1, sv - 1) }); },
+inc: function () { self.setState({ servings: Math.min(8, sv + 1) }); }
+};
+}
+}
+</script>
+</body>
+</html>
