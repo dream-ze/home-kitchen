@@ -1,6 +1,6 @@
 // 模拟模型：不联网，返回固定的示例结果，用于本地联调和测试。
 // 文字导入时做一点简单解析，让粘贴的内容能体现在结果里。
-import type { GroceryResult, NutritionResult, RecipeResult } from '../schemas';
+import type { GroceryResult, MealResult, NutritionResult, RecipeResult } from '../schemas';
 import { validate } from './json';
 import type { Provider, Task } from './types';
 
@@ -43,6 +43,32 @@ const GROCERIES: GroceryResult = {
   warnings: ['示例结果：服务器现在用的是模拟模型，没有真正识别图片'],
 };
 
+const MEAL: MealResult = {
+  items: [
+    { name: '宫保鸡丁', gramsMin: 180, gramsMax: 240, kcalMin: 400, kcalMax: 520, protein: 30, fat: 28, carb: 18 },
+    { name: '米饭', gramsMin: 150, gramsMax: 200, kcalMin: 175, kcalMax: 230, protein: 4, fat: 0.5, carb: 45 },
+    { name: '拍黄瓜', gramsMin: 100, gramsMax: 150, kcalMin: 75, kcalMax: 130, protein: 1, fat: 8, carb: 4 },
+  ],
+  notes: ['示例结果：服务器现在用的是模拟模型，没有真正识别图片'],
+};
+
+/** 文字估算：每样东西按逗号拆开，给一个固定的区间 */
+function mealFromText(text: string): MealResult {
+  const names = text.replace(/^请估算这些食物：/, '').split(/[，,、;；\n]+/).map((s) => s.trim()).filter(Boolean);
+  return {
+    items: names.map((name) => ({ name: name.slice(0, 20), gramsMin: 150, gramsMax: 250, kcalMin: 150, kcalMax: 250, protein: 8, fat: 8, carb: 20 })),
+    notes: ['示例结果：模拟模型只按文字拆开，热量是固定值'],
+  };
+}
+
+/** 一句话纠正：第一道菜热量加 25%，够联调"前后差多少"即可 */
+function mealCorrected(previous: MealResult): MealResult {
+  const items = previous.items.map((it, i) =>
+    i === 0 ? { ...it, kcalMin: Math.round(it.kcalMin * 1.25), kcalMax: Math.round(it.kcalMax * 1.25), fat: it.fat + 10 } : it,
+  );
+  return { items, notes: ['示例结果：模拟模型把第一道菜的热量调高了 25%'] };
+}
+
 function nutrition(name: string): NutritionResult {
   return {
     per100: { kcal: 40, protein: 1.5, fat: 0.3, carb: 8 },
@@ -84,6 +110,10 @@ export function mockProvider(): Provider {
       let out: unknown;
       if (task.kind === 'recipe') out = task.images.length ? RECIPE : recipeFromText(task.text.replace(/^请整理下面这段菜谱文字：\n\n/, ''));
       else if (task.kind === 'groceries') out = GROCERIES;
+      else if (task.kind === 'meal') {
+        const prev = task.text.match(/^上一次的估算结果：(.+)\n\n用户的纠正/);
+        out = prev ? mealCorrected(JSON.parse(prev[1]) as MealResult) : task.images.length ? MEAL : mealFromText(task.text);
+      }
       else out = nutrition(task.text);
       return validate(task.schema, out);
     },

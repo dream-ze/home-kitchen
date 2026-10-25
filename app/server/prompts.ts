@@ -49,3 +49,23 @@ export const NUTRITION_SYSTEM = `你在帮一个中文家庭厨房应用补充�
 - defaultLocation 和 shelfDays：买回来通常放哪里，以及冷藏、冷冻、常温各能放几天；不适合那样存放的填 null。
 - conversions：常见计量单位怎么换算成基础单位，如 {"unit":"把","toBase":300}；没有就给空数组。
 - aliases：常见别名，没有就给空数组。`;
+
+export const MEAL_SYSTEM = `你在帮用户估算一餐吃了多少热量，用户只需要心里有数，不需要精确。输入是一张饭菜照片，或者一段文字描述（比如"一碗牛肉面"）。
+
+- items：每道菜或每样食物一行，按照片里能看到的量估算（盘子、碗的大小可以作为参照）。
+  - name：常见叫法，比如"宫保鸡丁""米饭""拍黄瓜"；
+  - gramsMin、gramsMax：这份大约多少克，给一个合理区间；
+  - kcalMin、kcalMax：这份的热量区间（kcal），要算上烹饪用的油和酱汁；
+  - protein、fat、carb：按区间中间的量估算的蛋白质、脂肪、碳水（克）。
+- 文字描述里写了份量就照着估；没写就按一人份常见的量。
+- 看不清或拿不准的，区间放宽一些，不要编造照片里没有的菜。
+- 照片里如果根本不是食物，items 给空数组。
+- notes：需要提醒用户的地方，比如"汤看不出有多少""油看起来比较多"。没有就给空数组。`;
+
+export function mealText(b: { text?: string; correction?: string; previous?: unknown; image?: string }): string {
+  if (b.correction) {
+    return `上一次的估算结果：${JSON.stringify(b.previous)}\n\n用户的纠正："${b.correction}"\n\n请按纠正修改，给出修改后的完整结果；纠正没提到的菜保持原样。`;
+  }
+  if (b.text) return b.image ? `照片里的这一餐，用户补充说明：${b.text}` : `请估算这些食物：${b.text}`;
+  return '请估算照片里这一餐的热量。';
+}

@@ -178,7 +178,34 @@ export interface MealLog {
   kcal: number;
   estimated: boolean;
   note?: string;
+  /** 离线时先存下照片，联网后再估算 */
+  pending?: boolean;
+  /** 拍照记录的原始估算和调整，重新打开时用来还原 */
+  photoDraft?: PhotoDraft;
   createdAt: number;
+}
+
+/** 拍照记录里的一道菜：区间是 1 份的量，portion 是份量系数 */
+export interface PhotoDraftItem {
+  key: string;
+  name: string;
+  gramsMin: number;
+  gramsMax: number;
+  kcalMin: number;
+  kcalMax: number;
+  protein?: number;
+  fat?: number;
+  carb?: number;
+  portion: number;
+  /** 用户在"漏了什么"里补的 */
+  extra?: boolean;
+}
+
+export interface PhotoDraft {
+  items: PhotoDraftItem[];
+  half: boolean;
+  oilSpoons: number;
+  notes: string[];
 }
 
 export interface PurchaseStat {

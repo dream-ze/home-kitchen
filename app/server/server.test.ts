@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import app, { pickProvider } from './index';
 import { extractJson, validate, withRetry } from './providers/json';
 import { NotRecognizedError } from './providers/types';
-import { GroceryResult, NutritionResult, RecipeResult } from './schemas';
+import { GroceryResult, MealResult, NutritionResult, RecipeResult } from './schemas';
 
 const env = { AI_PROVIDER: 'mock', AI_BASE_URL: '', AI_MODEL: '', APP_TOKEN: 'secret' };
 const img = 'A'.repeat(200);
@@ -61,6 +61,21 @@ describe('接口（模拟模型）', () => {
   it('估算营养', async () => {
     const data = NutritionResult.parse(await (await call('/api/estimate-nutrition', { name: '芦笋' })).json());
     expect(data.per100.kcal).toBeGreaterThan(0);
+  });
+  it('估算一餐：照片、文字、一句话纠正', async () => {
+    const photo = MealResult.parse(await (await call('/api/estimate-meal', { image: img })).json());
+    expect(photo.items.map((i) => i.name)).toEqual(['宫保鸡丁', '米饭', '拍黄瓜']);
+    const text = MealResult.parse(await (await call('/api/estimate-meal', { text: '一碗牛肉面，一杯奶茶' })).json());
+    expect(text.items.map((i) => i.name)).toEqual(['一碗牛肉面', '一杯奶茶']);
+    const fixed = MealResult.parse(
+      await (await call('/api/estimate-meal', { image: img, correction: '宫保鸡丁油很多', previous: photo })).json(),
+    );
+    expect(fixed.items[0].kcalMin).toBeGreaterThan(photo.items[0].kcalMin);
+    expect(fixed.items[1]).toEqual(photo.items[1]);
+  });
+  it('估算一餐：参数不对返回 400', async () => {
+    expect((await call('/api/estimate-meal', {})).status).toBe(400);
+    expect((await call('/api/estimate-meal', { image: img, correction: '油多' })).status).toBe(400);
   });
   it('参数不对返回 400', async () => {
     expect((await call('/api/recognize-recipe', { images: [] })).status).toBe(400);

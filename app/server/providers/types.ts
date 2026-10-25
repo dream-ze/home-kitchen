@@ -10,7 +10,7 @@ export interface Env {
 
 /** 一次识别任务：系统提示、用户文字、可选的图片（base64 JPEG），以及输出必须符合的格式 */
 export interface Task<T> {
-  kind: 'recipe' | 'groceries' | 'nutrition';
+  kind: 'recipe' | 'groceries' | 'nutrition' | 'meal';
   system: string;
   text: string;
   images: string[];

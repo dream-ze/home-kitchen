@@ -4,14 +4,35 @@
     {
       "name": "shipu-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "app", "run", "dev", "--", "--port", "5173", "--strictPort"],
+      "runtimeArgs": [
+        "--prefix",
+        "app",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5173",
+        "--strictPort"
+      ],
       "port": 5173
     },
     {
       "name": "shipu-prod",
       "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "cd app && npm run build && npx vite preview --port 4173 --strictPort"],
+      "runtimeArgs": [
+        "-c",
+        "cd app && npm run build && npx vite preview --port 4173 --strictPort"
+      ],
       "port": 4173
+    },
+    {
+      "name": "shipu-api-mock",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd app && npm run build && npx wrangler pages dev dist --port 8788 --binding AI_PROVIDER=mock"
+      ],
+      "port": 8788
     }
   ]
 }

@@ -8,7 +8,7 @@ import { anthropicProvider } from './providers/anthropic';
 import { mockProvider } from './providers/mock';
 import { openaiCompatibleProvider } from './providers/openaiCompatible';
 import { NotRecognizedError, UpstreamError, type Env, type Provider } from './providers/types';
-import { GroceryResult, ImagesBody, NameBody, NutritionResult, RecipeResult, TextBody } from './schemas';
+import { GroceryResult, ImagesBody, MealBody, MealResult, NameBody, NutritionResult, RecipeResult, TextBody } from './schemas';
 
 export function pickProvider(env: Env): Provider {
   switch (env.AI_PROVIDER) {
@@ -76,6 +76,14 @@ app.post('/api/recognize-groceries', async (c) => {
 app.post('/api/estimate-nutrition', async (c) => {
   const { name } = await body(c, NameBody);
   const out = await pickProvider(c.env).generate({ kind: 'nutrition', system: P.NUTRITION_SYSTEM, text: `食材：${name}`, images: [], schema: NutritionResult });
+  return c.json(out);
+});
+
+app.post('/api/estimate-meal', async (c) => {
+  const b = await body(c, MealBody);
+  const out = await pickProvider(c.env).generate({
+    kind: 'meal', system: P.MEAL_SYSTEM, text: P.mealText(b), images: b.image ? [b.image] : [], schema: MealResult,
+  });
   return c.json(out);
 });
 

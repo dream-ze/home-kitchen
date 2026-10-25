@@ -1,12 +1,13 @@
 // P01 今天。
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../db/db';
 import { SLOTS, type MealLog, type MealPlanEntry, type Recipe, type Slot } from '../db/types';
-import { useFoodMap, useSettings, useToday } from '../data/hooks';
+import { useBlobUrl, useFoodMap, useSettings, useToday } from '../data/hooks';
+import { deleteMealLog, prepareMealPhoto, savePendingPhoto, setLogServings, startMealPhoto } from '../data/meals';
 import { addToPlan, copyLogs, markEaten, setEatenServings, undoEaten } from '../data/plan';
-import { addDays, fullDayLabel, weekdayLabel } from '../logic/dates';
+import { addDays, fullDayLabel, slotByTime, weekdayLabel } from '../logic/dates';
 import { daysLeft, expiryShort, expiryStatus } from '../logic/expiry';
 import { formatKcal, recipeNutrition } from '../logic/nutrition';
 import { expiringUse, sortRecipes } from '../logic/recommend';
@@ -31,12 +32,14 @@ export function TodayPage() {
   const pantry = useLiveQuery(() => db.pantry.toArray(), [], []);
   const [pick, setPick] = useState<Slot | null>(null);
   const [copyOpen, setCopyOpen] = useState(false);
+  const [logOpen, setLogOpen] = useState<MealLog | null>(null);
+  const photoRef = useRef<HTMLInputElement>(null);
 
   const recipeMap = useMemo(() => new Map((recipes ?? []).map((r) => [r.id, r])), [recipes]);
   const todayLogs = logs.filter((l) => l.date === today);
   const total = todayLogs.reduce((s, l) => s + l.kcal, 0);
   const macro = (k: 'protein' | 'fat' | 'carb') => Math.round(todayLogs.reduce((s, l) => s + l.items.reduce((a, i) => a + (i[k] ?? 0), 0), 0));
-  const estimated = todayLogs.filter((l) => l.estimated).length;
+  const estimated = todayLogs.filter((l) => l.estimated && !l.pending).length;
 
   const week = Array.from({ length: 7 }, (_, i) => addDays(today, i - 6)).map((d) => ({
     date: d,
@@ -120,7 +123,41 @@ export function TodayPage() {
               })}
             </div>
           </div>
-          <button className="btn block" onClick={() => setCopyOpen(true)}>复制昨天的记录</button>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: 10 }}>
+            <button
+              className="btn primary"
+              onClick={() => {
+                if (!settings.appToken) return toast('还没填 AI 服务的访问口令，先去设置里填好');
+                photoRef.current?.click();
+              }}
+            >
+              <Icon name="camera" size={18} />拍照记录
+            </button>
+            <button className="btn" onClick={() => setCopyOpen(true)}>复制昨天</button>
+          </div>
+          <input
+            ref={photoRef}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              e.target.value = '';
+              if (!f) return;
+              try {
+                const photo = await prepareMealPhoto(f);
+                // 没联网：先存下照片，联网后点这条记录再估算
+                if (!navigator.onLine) {
+                  const undo = await savePendingPhoto(photo.blobId, today, slotByTime());
+                  return toast('没联网，照片先存下了，联网后点它估算', undo);
+                }
+                startMealPhoto(photo);
+                navigate('/meal');
+              } catch (err) {
+                toast('图片读不出来，换一张试试：' + String((err as Error).message ?? err));
+              }
+            }}
+          />
         </section>
 
         <section className="section">
@@ -140,13 +177,18 @@ export function TodayPage() {
                       <Fragment key={e.id}>{renderPlanRow(e, recipeMap.get(e.recipeId), todayLogs.find((l) => l.id === e.mealLogId))}</Fragment>
                     ))}
                     {extra.map((l) => (
-                      <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <button
+                        key={l.id}
+                        className="log-row"
+                        onClick={() => (l.pending || l.photoDraft ? navigate(`/meal/${l.id}`) : setLogOpen(l))}
+                      >
+                        {l.photoBlobId && <LogPhoto id={l.photoBlobId} />}
                         <div className="row-main">
-                          <span className="row-title strong">{l.items.map((i) => i.name).join(' · ')}</span>
-                          <span className="row-sub">约 {formatKcal(l.kcal)} kcal</span>
+                          <span className="row-title strong">{l.pending ? '拍照记录' : l.items.map((i) => i.name).join(' · ')}</span>
+                          <span className="row-sub">{l.pending ? '照片已存下，联网后点这里估算' : `约 ${formatKcal(l.kcal)} kcal${l.estimated ? ' · 估算' : ''}`}</span>
                         </div>
-                        <span className="badge green">已记录</span>
-                      </div>
+                        {l.pending ? <span className="badge warn">待估算</span> : <span className="badge green">已记录</span>}
+                      </button>
                     ))}
                     {list.length === 0 && extra.length === 0 ? (
                       <button className="btn dashed block" onClick={() => setPick(s.key)}>+ 从菜谱添加</button>
@@ -210,6 +252,7 @@ export function TodayPage() {
       <TabBar />
       {pick && <PickRecipeSheet date={today} slot={pick} onClose={() => setPick(null)} />}
       {copyOpen && <CopyYesterdaySheet today={today} onClose={() => setCopyOpen(false)} />}
+      {logOpen && <LogSheet log={logOpen} onClose={() => setLogOpen(null)} />}
     </>
   );
 
@@ -269,10 +312,54 @@ export function TodayPage() {
   }
 }
 
+function LogPhoto({ id }: { id: string }) {
+  const url = useBlobUrl(id);
+  return (
+    <div className="tile t-gray" style={{ width: 44, height: 44 }} aria-hidden="true">
+      {url && <img src={url} alt="" />}
+    </div>
+  );
+}
+
+/** 点一条不是拍照的记录：按菜谱记的可以改份数；都可以删除 */
+function LogSheet({ log, onClose }: { log: MealLog; onClose: () => void }) {
+  const toast = useToast();
+  const live = useLiveQuery(() => db.mealLogs.get(log.id), [log.id]) ?? log;
+  return (
+    <Sheet
+      title={live.items.map((i) => i.name).join(' · ')}
+      sub={`${SLOTS.find((s) => s.key === live.slot)?.label} · 约 ${formatKcal(live.kcal)} kcal`}
+      onClose={onClose}
+      footer={
+        <button
+          className="btn big block danger-text"
+          onClick={async () => {
+            const undo = await deleteMealLog(live.id);
+            onClose();
+            toast('已删除这条记录', undo);
+          }}
+        >
+          删除这条记录
+        </button>
+      }
+    >
+      {live.servingsEaten != null ? (
+        <div className="section-head">
+          <span style={{ fontSize: 15 }}>吃了几份</span>
+          <Stepper label="吃了几份" value={live.servingsEaten} min={0.5} max={4} step={0.5} format={(v) => `${v} 份`} onChange={(v) => setLogServings(live.id, v)} />
+        </div>
+      ) : (
+        <span className="hint">这条记录不能改份数，不对的话删掉重新记</span>
+      )}
+    </Sheet>
+  );
+}
+
 function CopyYesterdaySheet({ today, onClose }: { today: string; onClose: () => void }) {
   const toast = useToast();
   const yesterday = addDays(today, -1);
-  const logs = useLiveQuery(() => db.mealLogs.where('date').equals(yesterday).toArray(), [yesterday], [] as MealLog[]);
+  // 待估算的记录还没有热量，不能复制
+  const logs = useLiveQuery(() => db.mealLogs.where('date').equals(yesterday).filter((l) => !l.pending).toArray(), [yesterday], [] as MealLog[]);
   const [off, setOff] = useState<Set<string>>(new Set());
   const chosen = logs.filter((l) => !off.has(l.id));
   return (

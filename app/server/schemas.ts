@@ -54,8 +54,34 @@ export const NutritionResult = z.object({
 });
 export type NutritionResult = z.infer<typeof NutritionResult>;
 
+export const MealItem = z.object({
+  name: z.string(),
+  gramsMin: z.number(),
+  gramsMax: z.number(),
+  kcalMin: z.number(),
+  kcalMax: z.number(),
+  protein: z.number(),
+  fat: z.number(),
+  carb: z.number(),
+});
+export const MealResult = z.object({
+  items: z.array(MealItem),
+  notes: z.array(z.string()),
+});
+export type MealResult = z.infer<typeof MealResult>;
+
 // ---- 请求 ----
 const base64Image = z.string().min(100).max(4_000_000);
 export const ImagesBody = z.object({ images: z.array(base64Image).min(1).max(4) });
 export const TextBody = z.object({ text: z.string().trim().min(1).max(20_000) });
 export const NameBody = z.object({ name: z.string().trim().min(1).max(50) });
+/** 估算一餐：照片或文字至少有一个；一句话纠正时带上上一次的结果（文字记的那一餐没有照片） */
+export const MealBody = z
+  .object({
+    image: base64Image.optional(),
+    text: z.string().trim().min(1).max(500).optional(),
+    correction: z.string().trim().min(1).max(500).optional(),
+    previous: MealResult.optional(),
+  })
+  .refine((b) => b.image || b.text || b.previous, '要有照片或文字')
+  .refine((b) => !b.correction || b.previous, '纠正时要带上上一次的结果');

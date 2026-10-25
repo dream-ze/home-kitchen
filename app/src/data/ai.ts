@@ -46,6 +46,29 @@ export interface AiNutrition {
   aliases: string[];
 }
 
+export interface AiMealItem {
+  name: string;
+  gramsMin: number;
+  gramsMax: number;
+  kcalMin: number;
+  kcalMax: number;
+  protein: number;
+  fat: number;
+  carb: number;
+}
+
+export interface AiMeal {
+  items: AiMealItem[];
+  notes: string[];
+}
+
+export interface MealRequest {
+  image?: string;
+  text?: string;
+  correction?: string;
+  previous?: AiMeal;
+}
+
 export type AiErrorCode = 'not_configured' | 'offline' | 'unauthorized' | 'not_recognized' | 'timeout' | 'server' | 'bad_request';
 
 export class AiError extends Error {
@@ -100,6 +123,7 @@ export const ai = {
   parseText: (text: string, signal?: AbortSignal) => call<AiRecipe>('/api/parse-text', { text }, signal),
   recognizeGroceries: (images: string[], signal?: AbortSignal) => call<AiGroceries>('/api/recognize-groceries', { images }, signal),
   estimateNutrition: (name: string) => call<AiNutrition>('/api/estimate-nutrition', { name }),
+  estimateMeal: (req: MealRequest, signal?: AbortSignal) => call<AiMeal>('/api/estimate-meal', req, signal),
 };
 
 export function errorText(e: unknown): string {

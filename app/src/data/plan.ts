@@ -6,6 +6,7 @@ import { recipeNutrition } from '../logic/nutrition';
 import { applyPlanChange } from '../logic/shopping';
 import { deductionForRecipe } from '../logic/stock';
 import { applyStockChanges, rollbackTxn } from './pantry';
+import { setLogServings } from './meals';
 import { foodMap, type Undo } from './shopping';
 
 export async function addToPlan(date: string, slot: Slot, recipeIds: string[], servings?: number): Promise<Undo> {
@@ -83,18 +84,7 @@ export async function markEaten(entryId: string): Promise<void> {
 /** 改"我吃了几份"：只改热量记录，不动库存 */
 export async function setEatenServings(entryId: string, servings: number): Promise<void> {
   const entry = await db.plan.get(entryId);
-  if (!entry?.mealLogId) return;
-  const log = await db.mealLogs.get(entry.mealLogId);
-  if (!log) return;
-  const k = servings / (log.servingsEaten || 1);
-  const items = log.items.map((i) => ({
-    ...i,
-    kcalMin: i.kcalMin * k, kcalMax: i.kcalMax * k,
-    protein: i.protein != null ? i.protein * k : undefined,
-    fat: i.fat != null ? i.fat * k : undefined,
-    carb: i.carb != null ? i.carb * k : undefined,
-  }));
-  await db.mealLogs.put({ ...log, servingsEaten: servings, items, kcal: log.kcal * k });
+  if (entry?.mealLogId) await setLogServings(entry.mealLogId, servings);
 }
 
 export async function undoEaten(entryId: string): Promise<void> {

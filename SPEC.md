@@ -343,9 +343,9 @@ POST /api/parse-text         { text: string }
     lines: { name; qty?; unit?; note?; originalText; noAmount; isHeader; confidence }[];
     steps: { text; timerSec? }[]; warnings: string[] }
 
-POST /api/estimate-meal      { image: string; correction?: string; previous?: EstimateResult }
+POST /api/estimate-meal      { image?: string; text?: string; correction?: string; previous?: EstimateResult }
 → { items: { name; gramsMin; gramsMax; kcalMin; kcalMax; protein; fat; carb }[];
-    totalKcalMin; totalKcalMax; notes: string[] }
+    notes: string[] }        // 总数由手机按 §5.5 计算；照片、文字至少有一个
 
 POST /api/recognize-groceries { images: string[] /* ≤4 */ }
 → { sourceType: 'receipt' | 'order' | 'photo';
@@ -359,7 +359,8 @@ GET  /api/health
 → { ok: true; provider; model }
 ```
 
-- **一句话纠正**：把 `correction` 和 `previous` 一起发给模型。返回后，前端算出每道菜前后差多少，先显示给用户，确认后再替换原结果。
+- **一句话纠正**：把 `correction` 和 `previous`（每道菜 1 份的量）一起发给模型。返回后，前端算出每道菜前后差多少（按当前份量和"只吃了一半"），先显示给用户，确认后再替换原结果，份量选择保留。
+- **文字估算**：只发 `text`，用于"用文字记录"、"漏了什么 → 自己写"、改菜名后重新估算这一道。
 - **超时**：手机端等 50 秒，服务端调模型等 45 秒；超时后显示"没认出来"，并给出"再试一次 / 手动输入"的入口。
 - **模型调用**（第二阶段已实现）：
   - Claude：用官方 SDK，配合结构化输出和服务端兜底（`fallbacks: "default"`），effort 设为 `low`，默认模型 `claude-opus-5-5`；
