@@ -278,3 +278,57 @@ a { color: var(--accent); text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- 正在做计时条 ---------- */
+.cook-bar {
+  position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 8px; width: 100%; border: none; text-align: left;
+  min-height: 48px; padding: calc(8px + env(safe-area-inset-top, 0px)) 16px 8px; background: var(--accent); color: #fff; font-size: 14px;
+}
+.cook-bar .grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cook-bar.done { background: var(--warn); }
+.navbar { top: var(--cookbar-h, 0px); }
+
+/* ---------- 烹饪模式（深色） ---------- */
+.cook-page {
+  --c-bg: #141A16; --c-ink: #F2F4F0; --c-muted: #A9B3AD; --c-surface: #1E2621; --c-chip: #232B26; --c-line: #2E3832; --c-border: #3A4540;
+  min-height: 100dvh; display: flex; flex-direction: column; background: var(--c-bg); color: var(--c-ink);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.app:has(.cook-page) { background: #141A16; }
+.cook-top { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 8px; padding: 12px 12px 0; }
+.cook-top .icon-btn { color: var(--c-ink); }
+.cook-top h1 { margin: 0; text-align: center; font-size: 17px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cook-wake { justify-self: end; font-size: 12px; color: var(--c-muted); background: var(--c-chip); border-radius: 999px; padding: 5px 10px; white-space: nowrap; }
+.cook-wake.off { color: #F3B48C; max-width: 120px; white-space: normal; text-align: center; line-height: 1.3; }
+.cook-progress { display: grid; gap: 6px; padding: 16px 20px 0; }
+.cook-progress span { height: 4px; border-radius: 2px; background: var(--c-line); }
+.cook-progress span.on { background: var(--accent-on-dark); }
+.cook-others { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 20px 0; }
+.cook-other { min-height: 36px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); color: var(--c-ink); font-size: 13px; padding: 0 12px; }
+.cook-other.done { border-color: var(--warn); background: var(--warn); color: #fff; font-weight: 700; }
+.cook-body { flex: 1; display: flex; flex-direction: column; gap: 22px; padding: 28px 24px 16px; touch-action: pan-y; }
+.cook-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 15px; color: var(--c-muted); }
+.hint-dark { font-size: 12px; color: var(--c-muted); }
+.cook-text { margin: 0; font-size: 27px; line-height: 1.6; font-weight: 500; }
+.cook-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.cook-chip { min-height: 36px; font-size: 15px; color: #DDE3DF; background: var(--c-chip); border: none; border-radius: 999px; padding: 6px 12px; }
+.cook-chip.on { color: var(--c-muted); text-decoration: line-through; }
+.cook-timer {
+  background: var(--c-surface); border: 1px solid var(--c-line); border-radius: 20px; padding: 18px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.cook-timer.done { border-color: var(--warn); animation: cook-flash 0.5s ease-in-out 2; }
+.cook-timer.done .hint-dark { color: #F3B48C; font-weight: 700; font-size: 14px; }
+@keyframes cook-flash { 50% { background: var(--warn); } }
+.cook-clock { font-size: 46px; font-weight: 700; line-height: 1.1; }
+.cook-timer-actions { display: flex; align-items: center; gap: 8px; }
+.cook-pill { height: 52px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--c-border); background: transparent; color: var(--c-ink); font-size: 16px; font-weight: 700; }
+.cook-pill.light { background: var(--c-ink); border-color: var(--c-ink); color: var(--c-bg); }
+.cook-adjust { display: flex; flex-direction: column; gap: 4px; }
+.cook-adjust button { height: 24px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--c-border); background: transparent; color: var(--c-ink); font-size: 12px; }
+.cook-foot { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 12px 20px calc(20px + var(--safe-bottom)); }
+.cook-btn { height: 60px; border-radius: 18px; border: 1px solid var(--c-border); background: transparent; color: var(--c-ink); font-size: 17px; }
+.cook-btn:disabled { opacity: 0.35; }
+.cook-btn.primary { border: none; background: var(--accent); color: #fff; font-weight: 700; }
+.cook-empty { flex: 1; display: flex; flex-direction: column; gap: 20px; align-items: center; justify-content: center; text-align: center; font-size: 17px; }
+.cook-page .sheet { color: var(--ink); }

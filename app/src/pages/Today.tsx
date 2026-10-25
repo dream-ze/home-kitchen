@@ -225,7 +225,7 @@ export function TodayPage() {
             <span className="row-sub">计划 {entry.servings} 份{per ? ` · 约 ${per} kcal / 份` : ''}</span>
           </Link>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 8 }}>
-            <Link to={`/recipes/${recipe.id}`} className="btn">开始做</Link>
+            <Link to={`/recipes/${recipe.id}?entry=${entry.id}`} className="btn">开始做</Link>
             <button
               className="btn primary"
               onClick={async () => {
@@ -259,7 +259,7 @@ export function TodayPage() {
               </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span className="hint">库存已按计划 {entry.servings} 份扣减</span>
+              <span className="hint">{entry.status === 'cooked' ? '做完了，库存已扣减' : `库存已按计划 ${entry.servings} 份扣减`}</span>
               <button className="btn text" style={{ minHeight: 32, fontSize: 13 }} onClick={() => undoEaten(entry.id)}>撤销</button>
             </div>
           </div>

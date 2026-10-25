@@ -63,3 +63,18 @@ export function useBlobUrl(id?: string): string | undefined {
   }, [blob]);
   return url;
 }
+
+/** 当前时间（毫秒），每隔 ms 刷新一次；从后台回来时立即刷新 */
+export function useNow(ms = 1000): number {
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const tick = () => setNow(Date.now());
+    const t = setInterval(tick, ms);
+    document.addEventListener('visibilitychange', tick);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener('visibilitychange', tick);
+    };
+  }, [ms]);
+  return now;
+}

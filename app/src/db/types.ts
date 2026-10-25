@@ -92,7 +92,8 @@ export interface CookSession {
   servings: number;
   stepIndex: number;
   checkedLines: number[];
-  timers: { stepIndex: number; endsAt: number; pausedRemain?: number }[];
+  /** rang：到点后已经响过铃，重新打开应用不再响 */
+  timers: { stepIndex: number; endsAt: number; pausedRemain?: number; rang?: boolean }[];
   startedAt: number;
   updatedAt: number;
 }

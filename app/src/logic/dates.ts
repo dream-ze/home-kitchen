@@ -56,3 +56,12 @@ export function dayNumber(date: string): number {
 export function fullDayLabel(date: string): string {
   return `${monthDay(date)} · 周${weekdayLabel(date)}`;
 }
+
+/** 按现在的时间猜餐次：10 点前早餐，10–15 点午餐，15–21 点晚餐，其余加餐（PRD P12） */
+export function slotByTime(now: Date = new Date()): 'breakfast' | 'lunch' | 'dinner' | 'snack' {
+  const h = now.getHours();
+  if (h < 10) return 'breakfast';
+  if (h < 15) return 'lunch';
+  if (h < 21) return 'dinner';
+  return 'snack';
+}

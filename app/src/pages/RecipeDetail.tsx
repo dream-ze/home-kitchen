@@ -1,30 +1,21 @@
 // P05 菜谱详情。
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Fragment, useEffect, useState, type ReactNode } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { db } from '../db/db';
-import { SLOTS, type Food, type Recipe, type RecipeLine, type Slot } from '../db/types';
+import { SLOTS, type Recipe, type Slot } from '../db/types';
+import { startCook, useCookSession } from '../data/cook';
 import { useBlobUrl, useFoodMap, useToday } from '../data/hooks';
 import { addToPlan } from '../data/plan';
 import { addMissingToShopping, lineStock } from '../data/recipes';
+import { amountText, lineName } from '../logic/cook';
 import { addDays, monthDay, toISODate, weekdayLabel } from '../logic/dates';
 import { recipeNutrition } from '../logic/nutrition';
 import { splitTimeSegments } from '../logic/text';
-import { roundQty } from '../logic/units';
 import { Segmented, Sheet, Stepper, toneFor } from '../ui/controls';
 import { Icon } from '../ui/Icon';
 import { useToast, useToastOffset } from '../ui/Toast';
 import { Thumbs } from '../ui/Thumbs';
-
-function amountText(line: RecipeLine, k: number): string {
-  if (line.noAmount || line.qty == null) return '适量';
-  const unit = line.unit ?? '';
-  return `${String(Math.round(roundQty(line.qty * k, unit) * 10) / 10)}${unit ? ' ' + unit : ''}`;
-}
-
-function lineName(line: RecipeLine, food?: Food): string {
-  return food?.name ?? (line.originalText.replace(/[\d.]+\s*\S*$/, '').trim() || line.originalText);
-}
 
 /** 步骤里出现的用料名高亮并带上用量；时长用橙色高亮 */
 function StepText({ text, terms }: { text: string; terms: { term: string; amount: string }[] }) {
@@ -73,10 +64,15 @@ export function RecipeDetailPage() {
   const cover = useBlobUrl(recipe?.coverBlobId);
   const [servings, setServings] = useState<number | null>(null);
   const [planOpen, setPlanOpen] = useState(false);
+  const [conflictOpen, setConflictOpen] = useState(false);
+  // 从今天页的菜单进来时带着菜单条目，份数默认用菜单上的
+  const entryId = useSearchParams()[0].get('entry') ?? undefined;
+  const entry = useLiveQuery(() => (entryId ? db.plan.get(entryId) : undefined), [entryId], null);
+  const cooking = useCookSession();
   useToastOffset(92);
   useEffect(() => {
-    if (recipe && servings == null) setServings(recipe.servings);
-  }, [recipe, servings]);
+    if (recipe && servings == null && entry !== null) setServings(entry?.recipeId === recipe.id ? entry.servings : recipe.servings);
+  }, [recipe, servings, entry]);
 
   if (recipe === null) return null;
   if (!recipe) {
@@ -207,14 +203,53 @@ export function RecipeDetailPage() {
       <div className="bottom-bar at-bottom">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 10 }}>
           <button className="btn big" style={{ fontWeight: 400 }} onClick={() => setPlanOpen(true)}>加入菜单</button>
-          <button className="btn primary big" onClick={() => toast('烹饪模式在第三阶段上线，先照着步骤做吧')}>
-            <Icon name="play" size={20} />开始做
+          <button
+            className="btn primary big"
+            onClick={async () => {
+              if (cooking?.recipeId === recipe.id) return navigate('/cook');
+              if (cooking) return setConflictOpen(true);
+              await startCook(recipe.id, sv, entry?.recipeId === recipe.id ? entry.id : undefined);
+              navigate('/cook');
+            }}
+          >
+            <Icon name="play" size={20} />{cooking?.recipeId === recipe.id ? '继续做' : '开始做'}
           </button>
         </div>
       </div>
 
       {planOpen && <AddToPlanSheet recipe={recipe} servings={sv} onClose={() => setPlanOpen(false)} />}
+      {conflictOpen && cooking && (
+        <CookConflictSheet
+          cookingId={cooking.recipeId}
+          step={cooking.stepIndex + 1}
+          onContinue={() => navigate('/cook')}
+          onReplace={async () => {
+            await startCook(recipe.id, sv, entry?.recipeId === recipe.id ? entry.id : undefined);
+            navigate('/cook');
+          }}
+          onClose={() => setConflictOpen(false)}
+        />
+      )}
     </>
+  );
+}
+
+/** 正在做别的菜时又点了"开始做" */
+function CookConflictSheet({
+  cookingId, step, onContinue, onReplace, onClose,
+}: {
+  cookingId: string;
+  step: number;
+  onContinue: () => void;
+  onReplace: () => void;
+  onClose: () => void;
+}) {
+  const title = useLiveQuery(async () => (await db.recipes.get(cookingId))?.title, [cookingId]) ?? '';
+  return (
+    <Sheet title="还有一道菜没做完" sub={`${title} · 做到第 ${step} 步`} onClose={onClose}>
+      <button className="btn primary big block" onClick={onContinue}>继续做{title}</button>
+      <button className="btn big block" onClick={onReplace}>不做它了，开始做这道</button>
+    </Sheet>
   );
 }
 

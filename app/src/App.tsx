@@ -13,6 +13,8 @@ import { FridgePage } from './pages/Fridge';
 import { SettingsPage } from './pages/Settings';
 import { ImportReviewPage } from './pages/ImportReview';
 import { ScanReviewPage } from './pages/ScanReview';
+import { CookPage } from './pages/Cook';
+import { CookBar } from './ui/CookBar';
 
 export function App() {
   const [ready, setReady] = useState(false);
@@ -37,6 +39,7 @@ export function App() {
       <ToastProvider>
         <div className="app">
           <ErrorBoundary>
+          <CookBar />
           <Routes>
             <Route path="/" element={<TodayPage />} />
             <Route path="/week" element={<WeekPlanPage />} />
@@ -49,6 +52,7 @@ export function App() {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/import" element={<ImportReviewPage />} />
             <Route path="/scan" element={<ScanReviewPage />} />
+            <Route path="/cook" element={<CookPage />} />
             <Route path="*" element={<TodayPage />} />
           </Routes>
           </ErrorBoundary>
