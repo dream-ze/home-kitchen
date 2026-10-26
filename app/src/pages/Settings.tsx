@@ -12,6 +12,7 @@ import { Sheet, Stepper, Switch } from '../ui/controls';
 import { Icon } from '../ui/Icon';
 import { useToast } from '../ui/Toast';
 import { ai, errorText } from '../data/ai';
+import { isIgnoredBase } from '../logic/url';
 
 const DAY = 86400000;
 
@@ -112,11 +113,28 @@ export function SettingsPage() {
         <Group title="AI 识别" hint="截图导入、粘贴文字、拍照入库、新建食材时都会用到。用哪家模型在服务器上设置，换模型不需要改手机这边。">
           <label className="field" style={{ padding: '12px 0', borderBottom: '1px solid var(--divider)' }}>
             服务地址（可选）
-            <input className="input" placeholder="留空就用本站" value={settings.workerUrl} onChange={(e) => updateSettings({ workerUrl: e.target.value.trim() })} />
+            <input
+              className="input"
+              type="url"
+              inputMode="url"
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              placeholder="留空就用本站"
+              value={settings.workerUrl}
+              onChange={(e) => updateSettings({ workerUrl: e.target.value.trim() })}
+            />
+            {isIgnoredBase(settings.workerUrl) && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--warn-ink)' }}>
+                这不是网址，不会用到，一般留空就行
+                <button className="btn small" type="button" onClick={() => updateSettings({ workerUrl: '' })}>清空</button>
+              </span>
+            )}
           </label>
           <label className="field" style={{ padding: '12px 0', borderBottom: '1px solid var(--divider)' }}>
             访问口令
-            <input className="input" type="password" autoComplete="off" value={settings.appToken} onChange={(e) => updateSettings({ appToken: e.target.value })} />
+            <input className="input" type="password" autoComplete="new-password" value={settings.appToken} onChange={(e) => updateSettings({ appToken: e.target.value.trim() })} />
           </label>
           <div className="row" style={{ minHeight: 56, borderBottom: 'none' }}>
             <span className="row-main" style={{ fontSize: 14, color: conn ? (conn.ok ? 'var(--accent-ink)' : 'var(--warn-ink)') : 'var(--muted)' }}>
@@ -129,6 +147,7 @@ export function SettingsPage() {
                 setTesting(true);
                 try {
                   const h = await ai.health();
+                  if (h?.ok !== true) throw new Error('服务地址不对，那边不是 AI 服务。把"服务地址"清空就用本站');
                   setConn({ ok: true, text: `连接正常 · ${h.provider === 'mock' ? '模拟模型（不会真的识别）' : `${h.provider} · ${h.model}`}` });
                 } catch (e) {
                   setConn({ ok: false, text: errorText(e) });

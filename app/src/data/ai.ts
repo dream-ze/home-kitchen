@@ -1,4 +1,5 @@
 // 调用 AI 服务（默认就是本站的 /api，也可以在设置里填别的地址）。错误一律转成能直接给人看的中文（PRD §6）。
+import { apiBase } from '../logic/url';
 import { getSettings } from './settings';
 
 export interface AiRecipe {
@@ -88,7 +89,7 @@ async function call<T>(path: string, body?: unknown, signal?: AbortSignal): Prom
   signal?.addEventListener('abort', () => ctrl.abort(signal.reason));
   let res: Response;
   try {
-    res = await fetch(s.workerUrl.trim().replace(/\/+$/, '') + path, {
+    res = await fetch(apiBase(s.workerUrl) + path, {
       method: body === undefined ? 'GET' : 'POST',
       headers: { 'Content-Type': 'application/json', 'X-App-Token': s.appToken },
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -102,15 +103,18 @@ async function call<T>(path: string, body?: unknown, signal?: AbortSignal): Prom
     clearTimeout(timer);
   }
   let data: { message?: string } & Record<string, unknown> = {};
+  let isJson = true;
   try {
     data = await res.json();
   } catch {
-    // 非 JSON 响应，按状态码处理
+    // 非 JSON 响应：多半是服务地址填错，请求发到了网页上
+    isJson = false;
   }
-  if (res.ok) return data as T;
+  if (res.ok && isJson) return data as T;
+  if (res.ok) throw new AiError('server', '服务地址不对，那边不是 AI 服务。把设置里的"服务地址"清空就用本站');
   const msg = typeof data.message === 'string' ? data.message : '';
   if (res.status === 401) throw new AiError('unauthorized', '访问口令不对，去设置里看看');
-  if (res.status === 404) throw new AiError('server', '找不到 AI 服务，检查一下设置里的服务地址（留空就是用本站）');
+  if (res.status === 404 || res.status === 405) throw new AiError('server', '找不到 AI 服务，把设置里的"服务地址"清空试试（留空就是用本站）');
   if (res.status === 422) throw new AiError('not_recognized', '没认出来' + (msg ? `：${msg}` : ''));
   if (res.status === 400) throw new AiError('bad_request', msg || '请求有问题');
   if (res.status === 504) throw new AiError('timeout', '等太久了，没认出来，再试一次吧');
