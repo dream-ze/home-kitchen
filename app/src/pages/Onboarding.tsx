@@ -25,6 +25,10 @@ export function Onboarding() {
             <span className="eyebrow">{fullDayLabel(today)}</span>
             <h1 className="title">今天</h1>
           </div>
+          {/* 还没有菜谱时也要能进设置：截图导入之前得先填 AI 访问口令 */}
+          <div className="header-actions">
+            <Link to="/settings" className="icon-btn" aria-label="设置"><Icon name="gear" /></Link>
+          </div>
         </header>
 
         {!isStandalone() && (
