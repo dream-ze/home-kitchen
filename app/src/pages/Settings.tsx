@@ -10,6 +10,7 @@ import { updateSettings } from '../data/settings';
 import { seedFoods } from '../db/seedFoods';
 import { Sheet, Stepper, Switch } from '../ui/controls';
 import { Icon } from '../ui/Icon';
+import { InstallHint } from '../ui/InstallHint';
 import { useToast } from '../ui/Toast';
 import { ai, errorText } from '../data/ai';
 import { isIgnoredBase } from '../logic/url';
@@ -52,13 +53,7 @@ export function SettingsPage() {
             </div>
           </div>
         ) : (
-          <div className="banner warn" style={{ alignItems: 'flex-start' }}>
-            <Icon name="share" />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <strong style={{ fontWeight: 500 }}>还没添加到主屏幕</strong>
-              <span style={{ fontSize: 13 }}>在 Safari 底部点“分享”，选“添加到主屏幕”。不加的话，Safari 可能会清掉长期没打开的数据。</span>
-            </div>
-          </div>
+          <InstallHint title="还没添加到主屏幕" tone="warn" />
         )}
 
         <Group title="备份与恢复">

@@ -30,7 +30,7 @@ export async function aiBlocker(): Promise<string | null> {
   return aiBlockerFor(await getSettings());
 }
 
-export async function startImageImport(files: File[]): Promise<void> {
+export async function startImageImport(files: Blob[]): Promise<void> {
   importSession = { images: await prepareImages(files.slice(0, MAX_IMAGES)) };
 }
 
@@ -42,7 +42,7 @@ export function takeImportSession(): ImportSession | null {
   return importSession;
 }
 
-export async function startScan(files: File[], mode: 'list' | 'fridge'): Promise<void> {
+export async function startScan(files: Blob[], mode: 'list' | 'fridge'): Promise<void> {
   scanSession = { images: await prepareImages(files.slice(0, MAX_IMAGES)), mode };
 }
 

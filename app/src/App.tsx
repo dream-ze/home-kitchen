@@ -15,6 +15,7 @@ import { ImportReviewPage } from './pages/ImportReview';
 import { ScanReviewPage } from './pages/ScanReview';
 import { CookPage } from './pages/Cook';
 import { MealPhotoPage } from './pages/MealPhoto';
+import { SharedPage } from './pages/Shared';
 import { CookBar } from './ui/CookBar';
 
 export function App() {
@@ -56,6 +57,7 @@ export function App() {
             <Route path="/cook" element={<CookPage />} />
             <Route path="/meal" element={<MealPhotoPage />} />
             <Route path="/meal/:id" element={<MealPhotoPage />} />
+            <Route path="/shared" element={<SharedPage />} />
             <Route path="*" element={<TodayPage />} />
           </Routes>
           </ErrorBoundary>

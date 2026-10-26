@@ -6,6 +6,7 @@ import { isStandalone, useToday } from '../data/hooks';
 import { loadDemoData } from '../data/demo';
 import { fullDayLabel } from '../logic/dates';
 import { Icon } from '../ui/Icon';
+import { InstallHint } from '../ui/InstallHint';
 import { TabBar } from '../ui/TabBar';
 import { useToast } from '../ui/Toast';
 
@@ -31,15 +32,7 @@ export function Onboarding() {
           </div>
         </header>
 
-        {!isStandalone() && (
-          <div className="banner neutral" style={{ alignItems: 'flex-start' }}>
-            <span style={{ color: 'var(--accent)', marginTop: 1 }}><Icon name="share" /></span>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <strong style={{ fontSize: 15, fontWeight: 500 }}>先把它添加到主屏幕</strong>
-              <span className="hint" style={{ fontSize: 13 }}>在 Safari 底部点“分享”，选“添加到主屏幕”。这样数据才能长期保存，打开也更快。</span>
-            </div>
-          </div>
-        )}
+        {!isStandalone() && <InstallHint title="先把它添加到主屏幕" tone="neutral" />}
 
         <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: '10px 0 4px', textAlign: 'center' }}>
           <svg viewBox="0 0 120 80" width="120" height="80" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

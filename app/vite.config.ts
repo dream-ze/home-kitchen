@@ -23,12 +23,21 @@ export default defineConfig({
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
+        // 安卓：装到桌面后，相册/其他应用的"分享"菜单里会出现"食谱"（iPhone 不支持）
+        share_target: {
+          action: '/share-target',
+          method: 'POST',
+          enctype: 'multipart/form-data',
+          params: { files: [{ name: 'images', accept: ['image/*'] }] },
+        },
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
         navigateFallback: 'index.html',
         // /api 是服务端接口，不能被离线缓存当成页面接管
         navigateFallbackDenylist: [/^\/api\//],
+        // 接住安卓分享过来的图片
+        importScripts: ['share-target.js'],
       },
     }),
   ],
