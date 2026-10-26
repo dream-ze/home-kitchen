@@ -110,3 +110,26 @@ export async function copyLogs(logIds: string[], toDate: string): Promise<Undo> 
     await db.mealLogs.bulkDelete(copies.map((c) => c.id));
   };
 }
+
+/** 长按拖动：把一道菜移到另一天或另一个餐次，排在那里的最后 */
+export async function movePlanEntry(id: string, date: string, slot: Slot): Promise<Undo> {
+  let before: MealPlanEntry | undefined;
+  await db.transaction('rw', db.plan, async () => {
+    before = await db.plan.get(id);
+    if (!before) return;
+    const order = await db.plan.where('date').equals(date).filter((e) => e.slot === slot && e.id !== id).count();
+    await db.plan.put({ ...before, date, slot, order });
+  });
+  return async () => {
+    if (before) await db.plan.put(before);
+  };
+}
+
+/** "帮我安排"确认后写入：都排进晚餐，整体可以撤销 */
+export async function addArranged(items: { date: string; recipeId: string }[]): Promise<Undo> {
+  const undos: Undo[] = [];
+  for (const it of items) undos.push(await addToPlan(it.date, 'dinner', [it.recipeId]));
+  return async () => {
+    for (const u of undos) await u();
+  };
+}

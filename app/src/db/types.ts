@@ -29,7 +29,10 @@ export interface Food {
   gPerBase: number;
   conversions: Conversion[];
   per100: Nutrition | null;
+  /** tw 台湾食品营养成分资料库；usda USDA FoodData Central；sample 第一版的样本参考值，升级时会被替换 */
   nutritionSource: 'tw' | 'usda' | 'ai' | 'manual' | 'sample';
+  /** 内置食材的数据出处，如 'tw:E7400102' */
+  nutritionRef?: string;
   shelfDays: Partial<Record<Location, number>>;
   defaultLocation: Location;
   purchaseUnit?: Conversion;
@@ -231,6 +234,10 @@ export interface Settings {
   showMacros: boolean;
   oilHint: boolean;
   onboardingDone: boolean;
+  /** 内置食材库的版本，升级食材库时用（SEED_VERSION） */
+  seedVersion?: number;
+  /** 购物页"长按拖到别的分区"提示已经显示过几次 */
+  sectionHintShown?: number;
 }
 
 export const SLOTS: { key: Slot; label: string }[] = [

@@ -8,6 +8,7 @@ import { loadDemoData } from '../data/demo';
 import { isStandalone, useSettings } from '../data/hooks';
 import { updateSettings } from '../data/settings';
 import { seedFoods } from '../db/seedFoods';
+import { SEED_VERSION } from '../logic/seedMerge';
 import { Sheet, Stepper, Switch } from '../ui/controls';
 import { Icon } from '../ui/Icon';
 import { InstallHint } from '../ui/InstallHint';
@@ -179,7 +180,7 @@ export function SettingsPage() {
 
         <Group title="关于">
           <p style={{ margin: 0, padding: '14px 0', fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.6, borderBottom: '1px solid var(--divider)' }}>
-            现在内置的约 50 种食材营养数据是常见参考值，之后会换成台湾食品营养成分资料库（政府资料开放授权）和 USDA FoodData Central 的正式数据。热量都是估算，心里有数就好。
+            内置约 300 种常用食材，营养数据（每 100 克可食部分）来自台湾卫生福利部食品药物管理署的“食品营养成分资料库”（政府资料开放授权条款第 1 版），少数资料库里没有的用美国农业部 USDA FoodData Central（CC0）补充。AI 新建的食材标为“估算”。热量都是估算，心里有数就好。
           </p>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', padding: '12px 0' }}>
             <button
@@ -200,7 +201,7 @@ export function SettingsPage() {
                 await db.transaction('rw', db.tables, async () => {
                   for (const t of db.tables) await t.clear();
                   await db.foods.bulkPut(seedFoods());
-                  await db.settings.put(DEFAULT_SETTINGS);
+                  await db.settings.put({ ...DEFAULT_SETTINGS, seedVersion: SEED_VERSION });
                 });
                 toast('已清空');
               }}

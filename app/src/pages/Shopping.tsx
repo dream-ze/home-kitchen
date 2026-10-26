@@ -1,10 +1,11 @@
 // P09 购物清单。
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { db } from '../db/db';
 import type { Food, Recipe, ShoppingItem } from '../db/types';
 import { useFoodMap, useFoods, useSettings, useToday } from '../data/hooks';
-import { addManualItem, buyAnyway, removeShoppingItem, toggleBought } from '../data/shopping';
+import { getSettings, updateSettings } from '../data/settings';
+import { addManualItem, buyAnyway, moveToSection, removeShoppingItem, toggleBought } from '../data/shopping';
 import { addDays, weekStart } from '../logic/dates';
 import { searchFoods } from '../logic/search';
 import { groupByRecipe } from '../logic/shopping';
@@ -19,6 +20,7 @@ import { useToast, useToastOffset } from '../ui/Toast';
 import { useNavigate } from 'react-router-dom';
 import { startScan } from '../data/session';
 import { useImagePicker } from '../ui/useImagePicker';
+import { useDragDrop, type DragProps } from '../ui/useDragDrop';
 
 export function ShoppingPage() {
   const today = useToday();
@@ -46,15 +48,40 @@ export function ShoppingPage() {
   const have = items.filter((i) => !i.bought && i.state === 'have');
   const recipeTitle = (id?: string) => recipes.find((r) => r.id === id)?.title;
 
+  // 长按拖到别的分区（PRD P09）：拖动时把空着的分区也列出来，方便放下
+  const dd = useDragDrop<ShoppingItem>({
+    canDrop: (item, sec) => sec !== item.section,
+    onDrop: async (item, sec) => {
+      const undo = await moveToSection(item.id, sec);
+      toast(`已把 ${itemName(item, item.foodId ? foods.get(item.foodId) : undefined)} 移到「${sec}」${item.foodId ? '，下次会记住' : ''}`, undo);
+    },
+  });
+
   const sections = useMemo(() => {
     const order = settings.sectionOrder;
     const map = new Map<string, ShoppingItem[]>();
+    if (dd.dragging) for (const sec of order) map.set(sec, []);
     for (const i of need) map.set(i.section, [...(map.get(i.section) ?? []), i]);
     return [...map.entries()].sort(([a], [b]) => {
       const ra = order.indexOf(a), rb = order.indexOf(b);
       return (ra < 0 ? 99 : ra) - (rb < 0 ? 99 : rb);
     });
-  }, [need, settings.sectionOrder]);
+  }, [need, settings.sectionOrder, dd.dragging]);
+
+  // "分错区了？"提示：有待买条目时显示，前 3 次打开后不再显示
+  const [sectionHint, setSectionHint] = useState(false);
+  const hintCounted = useRef(false);
+  const hasNeed = need.length > 0;
+  useEffect(() => {
+    if (!hasNeed || hintCounted.current) return;
+    hintCounted.current = true;
+    getSettings().then((s) => {
+      const n = s.sectionHintShown ?? 0;
+      if (n >= 3) return;
+      setSectionHint(true);
+      return updateSettings({ sectionHintShown: n + 1 });
+    });
+  }, [hasNeed]);
 
   const inList = new Set(need.map((i) => i.foodId).filter(Boolean));
   const frequent = stats
@@ -94,9 +121,10 @@ export function ShoppingPage() {
     toast(`已删除 ${itemName(item, item.foodId ? foods.get(item.foodId) : undefined)}`, undo);
   }
 
-  const renderRow = (item: ShoppingItem, last: boolean, key: string) => {
+  const renderRow = (item: ShoppingItem, last: boolean, key: string, draggable = false) => {
     const food = item.foodId ? foods.get(item.foodId) : undefined;
-    return <ShopRow key={key} item={item} food={food} sub={subText(item, food)} last={last} onToggle={toggle} onRemove={remove} />;
+    const drag = draggable ? dd.bind(item, itemName(item, food)) : undefined;
+    return <ShopRow key={key} item={item} food={food} sub={subText(item, food)} last={last} onToggle={toggle} onRemove={remove} drag={drag} />;
   };
 
   const weekEnd = addDays(weekStart(today), 6);
@@ -169,12 +197,22 @@ export function ShoppingPage() {
         ) : need.length === 0 ? (
           <div className="banner ok">都买齐了，点下面的“放进冰箱”记一下吧</div>
         ) : view === 'section' ? (
-          sections.map(([sec, list]) => (
-            <section key={sec} className="card list" style={{ padding: '6px 16px 4px' }}>
-              <h2 className="group-title">{sec}</h2>
-              {list.map((i, idx) => renderRow(i, idx === list.length - 1, i.id))}
-            </section>
-          ))
+          <>
+            {sections.map(([sec, list]) =>
+              list.length === 0 ? (
+                <div key={sec} className={'drop-empty' + (dd.over === sec ? ' drop-over' : '')} data-drop={sec}>
+                  <span>{sec}</span>
+                  <span>放到这里</span>
+                </div>
+              ) : (
+                <section key={sec} className={'card list' + (dd.over === sec ? ' drop-over' : '')} data-drop={sec} style={{ padding: '6px 16px 4px' }}>
+                  <h2 className="group-title">{sec}</h2>
+                  {list.map((i, idx) => renderRow(i, idx === list.length - 1, i.id, true))}
+                </section>
+              ),
+            )}
+            {sectionHint && <span className="hint">分错区了？长按条目拖到别的分区，下次会记住</span>}
+          </>
         ) : (
           [...groupByRecipe(need).entries()].map(([rid, list]) => (
             <section key={rid || 'other'} className="card list" style={{ padding: '6px 16px 4px' }}>
@@ -235,6 +273,7 @@ export function ShoppingPage() {
         </div>
       </div>
       <TabBar />
+      {dd.overlay}
 
       {gen && <GeneratePreviewSheet start={today} end={weekEnd} onClose={() => setGen(false)} />}
       {stock && <StockInSheet items={bought} foods={foods} onClose={() => setStock(false)} />}
@@ -243,7 +282,7 @@ export function ShoppingPage() {
 }
 
 function ShopRow({
-  item, food, sub, last, onToggle, onRemove,
+  item, food, sub, last, onToggle, onRemove, drag,
 }: {
   item: ShoppingItem;
   food?: Food;
@@ -251,10 +290,12 @@ function ShopRow({
   last?: boolean;
   onToggle: (i: ShoppingItem) => void;
   onRemove: (i: ShoppingItem) => void;
+  /** 长按拖动（只在"按分区"视图） */
+  drag?: DragProps;
 }) {
   const name = itemName(item, food);
   return (
-    <div className="row" style={{ minHeight: 58, borderBottom: last ? 'none' : undefined, cursor: 'pointer' }} onClick={() => onToggle(item)}>
+    <div {...drag} className="row" style={{ minHeight: 58, borderBottom: last ? 'none' : undefined, cursor: 'pointer', ...drag?.style }} onClick={() => onToggle(item)}>
       <button className="check" role="checkbox" aria-checked={false} aria-label={`标记已买 ${name}`} onClick={(e) => { e.stopPropagation(); onToggle(item); }} />
       <span className="row-main">
         <span className="row-title">{name}</span>

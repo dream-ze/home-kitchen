@@ -17,7 +17,7 @@ describe('按名称匹配食材', () => {
   it('单字食材名不会被随便包含匹配', () => {
     // "洋葱"不能因为包含"葱"就配到葱
     expect(matchFoodName(foods, '洋葱')?.name).toBe('洋葱');
-    expect(matchFoodName(foods, '紫甘蓝')).toBeUndefined();
+    expect(matchFoodName(foods, '鸭血')).toBeUndefined();
   });
 });
 
@@ -30,7 +30,7 @@ describe('截图导入：识别结果转成可编辑的行', () => {
       { name: '调料', qty: null, unit: null, originalText: '调料', noAmount: false, isHeader: true, confidence: 0.9 },
       { name: '冰糖', qty: 10, unit: 'g', originalText: '冰糖一小把', noAmount: false, isHeader: false, confidence: 0.4 },
       { name: '葱', qty: null, unit: null, originalText: '葱花适量', noAmount: true, isHeader: false, confidence: 0.9 },
-      { name: '蒜香叶', qty: 1, unit: '个', originalText: '蒜香叶1个', noAmount: false, isHeader: false, confidence: 0.9 },
+      { name: '罗勒叶', qty: 1, unit: '个', originalText: '罗勒叶1个', noAmount: false, isHeader: false, confidence: 0.9 },
     ],
   };
   const review = toReview(result, foods);
@@ -47,7 +47,7 @@ describe('截图导入：识别结果转成可编辑的行', () => {
   it('转回菜谱用料：忽略的行不要，适量的没有数量', () => {
     const lines = review.lines.map((l, i) => (i === 2 ? { ...l, kind: 'ignored' as const } : l));
     const out = reviewToLines(lines, new Map(foods.map((f) => [f.id, f])));
-    expect(out.map((l) => (l.isHeader ? `[${l.originalText}]` : l.originalText))).toEqual(['鸡翅中8个', '[调料]', '葱花适量', '蒜香叶1个']);
+    expect(out.map((l) => (l.isHeader ? `[${l.originalText}]` : l.originalText))).toEqual(['鸡翅中8个', '[调料]', '葱花适量', '罗勒叶1个']);
     expect(out[2]).toMatchObject({ noAmount: true, qty: undefined });
     expect(out[3].foodId).toBeUndefined();
   });

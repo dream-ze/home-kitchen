@@ -4,6 +4,7 @@ import { db } from '../db/db';
 import { DEFAULT_SETTINGS, type Food, type Settings } from '../db/types';
 import { todayISO } from '../logic/dates';
 import { seedFoods } from '../db/seedFoods';
+import { mergeSeedFoods, SEED_VERSION } from '../logic/seedMerge';
 import { getSettings } from './settings';
 
 export function useSettings(): Settings {
@@ -34,9 +35,15 @@ export function useToday(): string {
   return today;
 }
 
-/** 启动时：第一次打开写入样本食材；申请持久存储 */
+/** 启动时：第一次打开写入内置食材，旧版本升级食材库；申请持久存储 */
 export async function bootstrap(): Promise<void> {
-  if ((await db.foods.count()) === 0) await db.foods.bulkPut(seedFoods());
+  await db.transaction('rw', db.foods, db.settings, async () => {
+    const saved = await db.settings.get('app');
+    if ((saved?.seedVersion ?? 0) >= SEED_VERSION) return;
+    const foods = await db.foods.toArray();
+    await db.foods.bulkPut(foods.length === 0 ? seedFoods() : mergeSeedFoods(foods, seedFoods()));
+    await db.settings.put({ ...DEFAULT_SETTINGS, ...saved, seedVersion: SEED_VERSION });
+  });
   try {
     await navigator.storage?.persist?.();
   } catch {

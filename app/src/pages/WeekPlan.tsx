@@ -4,17 +4,21 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { db } from '../db/db';
 import { SLOTS, type MealPlanEntry, type Recipe, type Slot } from '../db/types';
-import { useFoodMap, useToday } from '../data/hooks';
-import { removePlanEntry, setPlanServings } from '../data/plan';
+import { useFoodMap, useSettings, useToday } from '../data/hooks';
+import { movePlanEntry, removePlanEntry, setPlanServings } from '../data/plan';
 import { previewForRange } from '../data/shopping';
 import { addDays, dayNumber, monthDay, weekDates, weekStart, weekdayLabel } from '../logic/dates';
+import { expiryStatus } from '../logic/expiry';
 import { recipeNutrition } from '../logic/nutrition';
+import { uncoveredExpiring, type ArrangeInput, type ExpiringFood } from '../logic/recommend';
+import { ArrangeSheet } from '../sheets/ArrangeSheet';
 import { GeneratePreviewSheet } from '../sheets/GeneratePreviewSheet';
 import { PickRecipeSheet } from '../sheets/PickRecipeSheet';
 import { Sheet, Stepper } from '../ui/controls';
 import { Icon } from '../ui/Icon';
 import { TabBar } from '../ui/TabBar';
 import { useToast, useToastOffset } from '../ui/Toast';
+import { useDragDrop } from '../ui/useDragDrop';
 
 function kShort(n: number): string {
   if (!n) return '空';
@@ -34,6 +38,9 @@ export function WeekPlanPage() {
   const entries = useLiveQuery(() => db.plan.where('date').between(start, end, true, true).toArray(), [start, end], [] as MealPlanEntry[]);
   const recipes = useLiveQuery(() => db.recipes.toArray(), [], [] as Recipe[]);
   const preview = useLiveQuery(() => previewForRange(start < today ? today : start, end), [start, end, today], []);
+  const pantry = useLiveQuery(() => db.pantry.toArray(), [], []);
+  const settings = useSettings();
+  const [arrange, setArrange] = useState<ArrangeInput | null>(null);
   const [pick, setPick] = useState<Slot | null>(null);
   const [edit, setEdit] = useState<MealPlanEntry | null>(null);
   const [gen, setGen] = useState(false);
@@ -48,6 +55,36 @@ export function WeekPlanPage() {
   const dayEntries = entries.filter((e) => e.date === selected);
   const missing = preview.filter((l) => l.state === 'need').length;
   const isPast = selected < today;
+
+  // 临期提醒条：只在本周、有临期食材还没被菜单用到时出现（PRD P02）
+  const expiring = useMemo(() => {
+    const m = new Map<string, ExpiringFood>();
+    for (const p of pantry) {
+      if (p.qty == null || !p.expiresAt || expiryStatus(p, today, settings.expiryWarnDays) !== 'soon') continue;
+      const cur = m.get(p.foodId);
+      if (!cur || p.expiresAt < cur.expiresAt) m.set(p.foodId, { foodId: p.foodId, expiresAt: p.expiresAt });
+    }
+    return [...m.values()].sort((a, b) => a.expiresAt.localeCompare(b.expiresAt));
+  }, [pantry, today, settings.expiryWarnDays]);
+  // 长按拖动：拖到日期条的某一天（同一餐次），或当天的另一个餐次（PRD P02）
+  const dd = useDragDrop<MealPlanEntry>({
+    canDrop: (e, t) => {
+      const [kind, v] = t.split(':');
+      if (kind === 'day') return v >= today && v !== e.date;
+      return e.date >= today && v !== e.slot;
+    },
+    onDrop: async (e, t) => {
+      const [kind, v] = t.split(':');
+      const date = kind === 'day' ? v : e.date;
+      const slot = kind === 'slot' ? (v as Slot) : e.slot;
+      const undo = await movePlanEntry(e.id, date, slot);
+      const where = `${date === e.date ? '' : `${monthDay(date)} 周${weekdayLabel(date)} `}${SLOTS.find((x) => x.key === slot)?.label}`;
+      toast(`已移到 ${where}`, undo);
+    },
+  });
+  const canDrag = (e: MealPlanEntry) => e.status === 'planned' && e.date >= today;
+
+  const uncovered = offset === 0 ? uncoveredExpiring({ recipes, weekPlan: entries, expiring, today }) : [];
 
   return (
     <>
@@ -67,9 +104,31 @@ export function WeekPlanPage() {
           {offset !== 0 && <button className="btn small" onClick={() => { setOffset(0); setSel(today); }}>回到本周</button>}
         </header>
 
+        {uncovered.length > 0 && (
+          <div className="banner warn">
+            <span className="grow">
+              {uncovered.slice(0, 3).map((x) => foods.get(x.foodId)?.name).join('、')}
+              {uncovered.length > 3 ? ` 等 ${uncovered.length} 样` : ''} {settings.expiryWarnDays} 天内到期，还没排进菜单
+            </span>
+            <button
+              className="btn small warn-outline"
+              onClick={() => setArrange({ recipes, weekPlan: entries, expiring, today, weekEnd: end, now: Date.now() })}
+            >
+              帮我安排
+            </button>
+          </div>
+        )}
+
         <div className="day-strip" role="tablist" aria-label="选择日期">
           {days.map((d) => (
-            <button key={d} role="tab" aria-selected={d === selected} className={d === today ? 'today' : ''} onClick={() => setSel(d)}>
+            <button
+              key={d}
+              role="tab"
+              aria-selected={d === selected}
+              className={(d === today ? 'today' : '') + (dd.over === `day:${d}` ? ' drop-over' : '')}
+              data-drop={`day:${d}`}
+              onClick={() => setSel(d)}
+            >
               <span className="wd">{weekdayLabel(d)}</span>
               <span className="dn num">{dayNumber(d)}</span>
               <span className="dk num">{kShort(dayKcal(d))}</span>
@@ -86,14 +145,19 @@ export function WeekPlanPage() {
             {SLOTS.map((s) => {
               const list = dayEntries.filter((e) => e.slot === s.key).sort((a, b) => a.order - b.order);
               return (
-                <div key={s.key} className="row" style={{ alignItems: 'flex-start', padding: '12px 0' }}>
+                <div key={s.key} className={'row' + (dd.over === `slot:${s.key}` ? ' drop-over' : '')} data-drop={`slot:${s.key}`} style={{ alignItems: 'flex-start', padding: '12px 0' }}>
                   <span className="slot-label" style={{ paddingTop: 12 }}>{s.label}</span>
                   <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {list.map((e) => {
                       const r = recipeMap.get(e.recipeId);
                       const k = perKcal(e.recipeId);
+                      const drag = canDrag(e) ? dd.bind(e, r?.title ?? '') : undefined;
                       return (
-                        <div key={e.id} style={{ display: 'flex', alignItems: 'center', gap: 10, minHeight: 44 }}>
+                        <div
+                          key={e.id}
+                          {...drag}
+                          style={{ display: 'flex', alignItems: 'center', gap: 10, minHeight: 44, ...drag?.style }}
+                        >
                           <Link to={`/recipes/${e.recipeId}`} className="row-main" style={{ color: 'inherit' }}>
                             <span className="row-title strong">{r?.title ?? '已删除的菜谱'}</span>
                             {k > 0 && <span className="row-sub">约 {k} kcal / 份</span>}
@@ -117,8 +181,10 @@ export function WeekPlanPage() {
               );
             })}
           </div>
+          {dayEntries.some(canDrag) && <span className="hint">长按一道菜，可以拖到上面的某一天，或当天的别的餐次</span>}
         </section>
       </main>
+      {dd.overlay}
 
       <div className="bottom-bar above-tabs">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
@@ -129,6 +195,7 @@ export function WeekPlanPage() {
       <TabBar active="/" />
 
       {pick && <PickRecipeSheet date={selected} slot={pick} onClose={() => setPick(null)} />}
+      {arrange && <ArrangeSheet input={arrange} recipes={recipeMap} foods={foods} onClose={() => setArrange(null)} />}
       {gen && <GeneratePreviewSheet start={start < today ? today : start} end={end} onClose={() => setGen(false)} />}
       {edit && (
         <ServingsSheet

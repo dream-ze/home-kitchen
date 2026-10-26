@@ -224,3 +224,23 @@ export async function toggleStaple(foodId: string, to: 'have' | 'low'): Promise<
     });
   };
 }
+
+/** 长按拖到别的分区：条目换区，食材也记住新分区（sectionLearned），以后生成清单都按这个分区 */
+export async function moveToSection(id: string, section: string): Promise<Undo> {
+  let items: ShoppingItem[] = [];
+  let food: Food | undefined;
+  await db.transaction('rw', db.shopping, db.foods, async () => {
+    const item = await db.shopping.get(id);
+    if (!item) return;
+    items = item.foodId ? await db.shopping.where('foodId').equals(item.foodId).toArray() : [item];
+    await db.shopping.bulkPut(items.map((i) => ({ ...i, section })));
+    food = item.foodId ? await db.foods.get(item.foodId) : undefined;
+    if (food) await db.foods.put({ ...food, section, sectionLearned: true });
+  });
+  return async () => {
+    await db.transaction('rw', db.shopping, db.foods, async () => {
+      await db.shopping.bulkPut(items);
+      if (food) await db.foods.put(food);
+    });
+  };
+}
