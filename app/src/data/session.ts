@@ -1,5 +1,6 @@
 // 识别会话：从"选图/粘贴"跳到核对页时，把图片和文字交给下一页。
 // 只放在内存里；核对页刷新后会话就没了，页面会提示重新选。
+import type { Settings } from '../db/types';
 import { getSettings } from './settings';
 import { prepareImages, type PreparedImage } from './images';
 
@@ -19,11 +20,14 @@ let scanSession: ScanSession | null = null;
 export const MAX_IMAGES = 4;
 
 /** 开始之前先检查：有没有配置 AI、有没有联网。返回不能开始的原因 */
-export async function aiBlocker(): Promise<string | null> {
-  const s = await getSettings();
+export function aiBlockerFor(s: Pick<Settings, 'appToken'>): string | null {
   if (!s.appToken) return '还没填 AI 服务的访问口令，先去设置里填好';
   if (!navigator.onLine) return '需要联网才能识别';
   return null;
+}
+
+export async function aiBlocker(): Promise<string | null> {
+  return aiBlockerFor(await getSettings());
 }
 
 export async function startImageImport(files: File[]): Promise<void> {
